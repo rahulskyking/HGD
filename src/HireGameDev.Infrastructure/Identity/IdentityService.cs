@@ -1,6 +1,5 @@
 using HireGameDev.Application.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace HireGameDev.Infrastructure.Identity;
 
@@ -67,9 +66,10 @@ public class IdentityService : IIdentityService
         string email,
         CancellationToken cancellationToken = default)
     {
-        return await _userManager.Users
-            .AnyAsync(
-                x => x.Email == email,
-                cancellationToken);
+        // FindByEmailAsync normalizes the email, so lookups are case-insensitive
+        // and consistent with how Identity enforces RequireUniqueEmail.
+        var user = await _userManager.FindByEmailAsync(email);
+
+        return user is not null;
     }
 }

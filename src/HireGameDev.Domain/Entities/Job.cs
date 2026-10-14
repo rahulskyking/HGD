@@ -1,5 +1,4 @@
 using HireGameDev.Domain.Enums;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace HireGameDev.Domain.Entities;
 
