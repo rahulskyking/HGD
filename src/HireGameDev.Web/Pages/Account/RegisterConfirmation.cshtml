@@ -1,0 +1,17 @@
+@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Check your email";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5 text-center">
+        <h1 class="h3 mb-3">@ViewData["Title"]</h1>
+        <p>We sent a confirmation link to <strong>@Model.Email</strong>.</p>
+        <p>Open it to activate your account. The link expires after a short while.</p>
+        <p class="text-muted">
+            Didn't get it? Check your spam folder or
+            <a asp-page="./ResendEmailConfirmation" asp-route-email="@Model.Email">send it again</a>.
+        </p>
+    </div>
+</div>

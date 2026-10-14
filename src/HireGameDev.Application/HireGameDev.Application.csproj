@@ -1,19 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\HireGameDev.Domain\HireGameDev.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\" />
-    <Folder Include="Features\Authentication\Commands\" />
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HireGameDev.Domain\HireGameDev.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Only the DI abstractions, so AddApplication() can register use-case handlers. -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.20" />
+  </ItemGroup>
 
 </Project>

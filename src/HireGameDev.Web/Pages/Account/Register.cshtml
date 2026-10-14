@@ -1,0 +1,74 @@
+@page
+@using HireGameDev.Domain.Enums
+@model RegisterModel
+@{
+    ViewData["Title"] = "Create your account";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <h1 class="h3 mb-3">@ViewData["Title"]</h1>
+
+        <form method="post" asp-route-returnUrl="@Model.ReturnUrl" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+            <fieldset class="mb-3">
+                <legend class="form-label fs-6">I am a</legend>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" asp-for="Input.Role" value="@UserRole.Candidate" id="roleCandidate" />
+                    <label class="form-check-label" for="roleCandidate">Game developer (candidate)</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" asp-for="Input.Role" value="@UserRole.Studio" id="roleStudio" />
+                    <label class="form-check-label" for="roleStudio">Studio (hiring)</label>
+                </div>
+                <span asp-validation-for="Input.Role" class="text-danger d-block"></span>
+            </fieldset>
+
+            <div class="mb-3">
+                <label asp-for="Input.Email" class="form-label"></label>
+                <input asp-for="Input.Email" class="form-control" autocomplete="email" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Password" class="form-label"></label>
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" />
+                <div class="form-text">At least 8 characters with an uppercase letter, a lowercase letter and a digit.</div>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.ConfirmPassword" class="form-label"></label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-2">
+                <input asp-for="Input.IsAdult" class="form-check-input" />
+                <label asp-for="Input.IsAdult" class="form-check-label"></label>
+                <span asp-validation-for="Input.IsAdult" class="text-danger d-block"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="Input.AcceptsTerms" class="form-check-input" />
+                <label class="form-check-label" asp-for="Input.AcceptsTerms">
+                    I agree to the Terms of Service and <a asp-page="/Privacy">Privacy Policy</a>
+                </label>
+                <span asp-validation-for="Input.AcceptsTerms" class="text-danger d-block"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Create account</button>
+        </form>
+
+        <partial name="_ExternalLoginButtonsPartial" model="@Model.ReturnUrl" />
+
+        <p class="mt-4 text-center">
+            Already have an account? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Sign in</a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,3 +1,4 @@
+using HireGameDev.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -5,18 +6,14 @@ namespace HireGameDev.Infrastructure.Identity;
 
 public static class IdentitySeeder
 {
-    private static readonly string[] Roles =
-    [
-        "Candidate",
-        "Studio",
-        "Admin"
-    ];
-
+    /// <summary>
+    /// Ensures one Identity role exists per <see cref="UserRole"/> member.
+    /// </summary>
     public static async Task SeedRolesAsync(IServiceProvider services)
     {
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
-        foreach (var role in Roles)
+        foreach (var role in Enum.GetNames<UserRole>())
         {
             if (await roleManager.RoleExistsAsync(role))
             {
