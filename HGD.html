@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HireGameDev — Project Specification Document</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 10.5pt; line-height: 1.65; color: #1a1a2e; }
+
+  .cover {
+    page-break-after: always; height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); color: white; padding: 40px;
+  }
+  .cover h1 { font-size: 48pt; letter-spacing: 4px; margin-bottom: 6px; }
+  .cover h1 span { color: #00d4ff; }
+  .cover .sub { font-size: 15pt; color: #aaa; letter-spacing: 6px; margin-bottom: 50px; text-transform: uppercase; }
+  .cover .tagline { font-size: 12pt; color: #ccc; max-width: 650px; line-height: 1.9; margin-bottom: 60px; }
+  .cover .meta { font-size: 9.5pt; color: #666; line-height: 2; }
+
+  .toc { page-break-after: always; padding: 30px 0; }
+  .toc h2 { font-size: 20pt; border-bottom: 3px solid #302b63; padding-bottom: 8px; margin-bottom: 18px; }
+  .toc ol { margin-left: 20px; }
+  .toc li { padding: 5px 0; border-bottom: 1px dotted #ddd; font-size: 11pt; }
+
+  .section { page-break-before: always; padding: 5px 0; }
+  h2 { font-size: 17pt; color: #1a1a2e; border-bottom: 3px solid #302b63; padding-bottom: 6px; margin: 28px 0 14px; }
+  h3 { font-size: 12.5pt; color: #302b63; margin: 16px 0 8px; border-left: 4px solid #00d4ff; padding-left: 10px; }
+  h4 { font-size: 11pt; color: #444; margin: 10px 0 5px; }
+  p { margin-bottom: 8px; }
+  ul, ol { margin: 6px 0 10px 20px; }
+  li { margin-bottom: 3px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 9.5pt; }
+  th { background: #302b63; color: white; padding: 7px 8px; text-align: left; }
+  td { padding: 6px 8px; border-bottom: 1px solid #e0e0e0; }
+  tr:nth-child(even) td { background: #f7f7fc; }
+
+  .box { background: #f4f4fb; border: 1px solid #ddd; border-radius: 5px; padding: 12px; margin: 10px 0; }
+  .box-green { background: #e8fff0; border-color: #00aa55; }
+  .box-blue { background: #e8f4ff; border-color: #0088cc; }
+  .box-purple { background: #f0e8ff; border-color: #7733cc; }
+  .box-red { background: #ffe8ec; border-color: #cc3355; }
+  .box-yellow { background: #fff8e0; border-color: #bbaa00; }
+
+  .badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 8.5pt; font-weight: bold; }
+  .b-mvp { background: #00cc66; color: #fff; }
+  .b-p1 { background: #0099dd; color: #fff; }
+  .b-p2 { background: #7733cc; color: #fff; }
+  .b-p3 { background: #dd6600; color: #fff; }
+  .b-p4 { background: #cc2244; color: #fff; }
+
+  .code { background: #1a1a2e; color: #00dd77; padding: 10px; border-radius: 5px; font-family: Consolas, monospace; font-size: 8.5pt; line-height: 1.5; margin: 8px 0; white-space: pre-wrap; }
+
+  .footer { text-align: center; color: #999; font-size: 8.5pt; margin-top: 30px; padding-top: 15px; border-top: 1px solid #ddd; }
+  .highlight { color: #302b63; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <h1>Hire<span>GameDev</span></h1>
+  <div class="sub">Game Industry Hiring Platform</div>
+  <div class="tagline">
+    Complete Project Specification Document<br><br>
+    Product Vision · MVP Scope · Technical Architecture · Database Design ·<br>
+    Pricing Strategy · India Market Focus · 4-Phase Build Roadmap ·<br>
+    Admin Panel · AI Integration · Competitive Analysis
+  </div>
+  <div class="meta">
+    Document Version: 1.0<br>
+    Date: June 2025<br>
+    Status: Final — Client Review<br>
+    Confidential
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li>Executive Summary</li>
+    <li>Problem Statement</li>
+    <li>Solution Overview</li>
+    <li>Target Audience (India Market)</li>
+    <li>Competitive Landscape</li>
+    <li>Exclusive Differentiators</li>
+    <li>MVP Feature Specification</li>
+    <li>Phase 1 — Validation (Months 4–6)</li>
+    <li>Phase 2 — Growth & Monetization (Months 7–12)</li>
+    <li>Phase 3 — Scale (Months 13–24)</li>
+    <li>Phase 4 — Ecosystem (Months 25–36)</li>
+    <li>Matching Algorithm</li>
+    <li>Profile Boost System</li>
+    <li>Pricing & Revenue Model</li>
+    <li>Engagement & Retention Strategy</li>
+    <li>Technical Architecture</li>
+    <li>Database Schema (12 Tables + Indexes)</li>
+    <li>Skills Master List (130+ Skills)</li>
+    <li>AI-Powered Resume Extraction</li>
+    <li>Admin Panel (10 Sections)</li>
+    <li>Hosting & Infrastructure</li>
+    <li>Legal & Compliance (India)</li>
+    <li>Build Timeline (13 Weeks)</li>
+    <li>Budget Projections</li>
+    <li>Revenue Projections</li>
+    <li>Risk Analysis & Mitigation</li>
+  </ol>
+</div>
+
+<!-- 1 -->
+<div class="section">
+<h2>1. Executive Summary</h2>
+<p><strong>HireGameDev</strong> is a specialized hiring platform built exclusively for the game development industry in India. It connects game developers (programmers, artists, designers, QA, audio engineers, producers) with game studios (indie, AA, AAA, outsourcing) through intelligent skill-based matching, verified shipped-title credibility, mandatory salary transparency, and an anti-ghosting enforcement system.</p>
+
+<div class="box-green box">
+<strong>Core Thesis:</strong> In game development, what you have shipped matters more than your degree or job title. HireGameDev is the first Indian platform that treats shipped games as the primary credibility signal and builds its entire matching and trust system around it.
+</div>
+
+<p><strong>Market:</strong> India-first. The Indian gaming market is valued at $3.1B (2024), growing at 20% CAGR, with 400+ studios and 50,000+ developers across Pune, Bangalore, Hyderabad, Mumbai, and Chennai.</p>
+<p><strong>Technology:</strong> ASP.NET Core 8, Razor Pages, PostgreSQL, SignalR — hosted on a Mumbai VPS.</p>
+<p><strong>MVP Cost:</strong> ~₹620/month infrastructure. 13-week build timeline.</p>
+<p><strong>Revenue Target:</strong> ₹25L/month by end of Year 1. ₹1.5Cr/month by end of Year 2.</p>
+</div>
+
+<!-- 2 -->
+<div class="section">
+<h2>2. Problem Statement</h2>
+<table>
+<tr><th>#</th><th>Problem</th><th>Who Suffers</th><th>Severity</th></tr>
+<tr><td>1</td><td>Generic platforms (Naukri, LinkedIn) don't understand game dev roles. "Software Engineer" is meaningless in games.</td><td>Both</td><td>High</td></tr>
+<tr><td>2</td><td>Shipped titles — the #1 credibility signal — are treated as plain text, never verified.</td><td>Candidates</td><td>Very High</td></tr>
+<tr><td>3</td><td>Salaries hidden behind "competitive" — wastes everyone's time.</td><td>Both</td><td>High</td></tr>
+<tr><td>4</td><td>80%+ of applications get zero response (ghosting).</td><td>Candidates</td><td>Very High</td></tr>
+<tr><td>5</td><td>Redundant take-home tests for every studio.</td><td>Candidates</td><td>High</td></tr>
+<tr><td>6</td><td>Portfolios are afterthoughts, not centerpieces.</td><td>Candidates</td><td>Medium</td></tr>
+<tr><td>7</td><td>Layoff response is chaotic (Google Sheets, Discord).</td><td>Laid-off devs</td><td>Very High</td></tr>
+<tr><td>8</td><td>No dedicated game hiring platform exists for India.</td><td>Indian devs</td><td>Very High</td></tr>
+<tr><td>9</td><td>Resume formats vary wildly — parsing fails on 50% of Indian resumes.</td><td>Both</td><td>Medium</td></tr>
+<tr><td>10</td><td>Fresher talent (15,000+/year) has no targeted platform.</td><td>Freshers</td><td>High</td></tr>
+</table>
+</div>
+
+<!-- 3 -->
+<div class="section">
+<h2>3. Solution Overview</h2>
+<h3>What HireGameDev Is</h3>
+<ul>
+<li>A two-sided marketplace connecting game developers with game studios</li>
+<li>Intelligent matching based on skills, shipped titles, engine experience, and preferences</li>
+<li>A credibility platform where shipped games are verified and portfolios are embedded</li>
+<li>A community hub for game jams, indie teams, and career growth</li>
+<li>AI-powered onboarding that extracts profiles from resumes, LinkedIn, and portfolios in 2 minutes</li>
+</ul>
+
+<h3>What HireGameDev Is NOT</h3>
+<ul>
+<li>Not a generic job board (no IT services, no marketing, no finance roles)</li>
+<li>Not a recruiter replacement (studios make their own hiring decisions)</li>
+<li>Not a social network (no feeds, no posts — focused purely on hiring)</li>
+<li>Not a freelance marketplace in v1 (contract roles yes, escrow-based freelance later)</li>
+</ul>
+
+<h3>One-Line Pitch</h3>
+<div class="box-purple box">"India's first hiring platform built specifically for game developers, where your shipped games matter more than your degree."</div>
+</div>
+
+<!-- 4 -->
+<div class="section">
+<h2>4. Target Audience (India Market)</h2>
+<h3>Candidates</h3>
+<table>
+<tr><th>Segment</th><th>Size</th><th>Key Needs</th><th>Priority</th></tr>
+<tr><td>Freshers (0 yrs)</td><td>15,000+/year</td><td>First job, internships, portfolio building</td><td>High</td></tr>
+<tr><td>Junior (1–3 yrs)</td><td>~12,000</td><td>Better roles, salary growth</td><td>High</td></tr>
+<tr><td>Mid (3–7 yrs)</td><td>~10,000</td><td>Senior roles, remote/international</td><td>Very High</td></tr>
+<tr><td>Senior (7–12 yrs)</td><td>~5,000</td><td>Lead roles, equity, leadership</td><td>High</td></tr>
+<tr><td>Lead/Director (12+ yrs)</td><td>~1,500</td><td>VP, co-founder, consulting</td><td>Medium</td></tr>
+</table>
+
+<h3>Studios</h3>
+<table>
+<tr><th>Segment</th><th>Examples</th><th>Key Needs</th><th>Phase</th></tr>
+<tr><td>Indie (1–50)</td><td>100+ small studios</td><td>Affordable hiring, co-founders</td><td><span class="badge b-mvp">MVP</span></td></tr>
+<tr><td>Outsourcing</td><td>Lakshya, Keywords, Technicolor</td><td>Contract artists, bulk hiring</td><td><span class="badge b-mvp">MVP</span></td></tr>
+<tr><td>AA (50–500)</td><td>Nazara, Moonfrog, Games24x7</td><td>Quality candidates, fast hiring</td><td><span class="badge b-p2">Phase 2</span></td></tr>
+<tr><td>AAA (500+)</td><td>Ubisoft Pune, EA Hyderabad, Rockstar BLR</td><td>Volume, ATS integration</td><td><span class="badge b-p3">Phase 3</span></td></tr>
+<tr><td>International Remote</td><td>US/EU studios hiring India</td><td>Verified talent, timezone overlap</td><td><span class="badge b-p2">Phase 2</span></td></tr>
+</table>
+
+<h3>Key Indian Game Dev Hubs</h3>
+<p>Pune · Bangalore · Hyderabad · Mumbai · Chennai · Noida · Kochi · Ahmedabad</p>
+</div>
+
+<!-- 5 -->
+<div class="section">
+<h2>5. Competitive Landscape</h2>
+<table>
+<tr><th>Competitor</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>HireGameDev Advantage</th></tr>
+<tr><td>Hitmarker</td><td>Game jobs</td><td>10k+ listings</td><td>No profiles, no matching</td><td>Profiles + match % + two-way</td></tr>
+<tr><td>LinkedIn</td><td>Generic</td><td>ML matching, 1B users</td><td>Generic, no shipped titles</td><td>Game-specific verification</td></tr>
+<tr><td>Naukri</td><td>Indian generic</td><td>Brand trust in India</td><td>Spam, no game focus</td><td>Curated, game-only, modern</td></tr>
+<tr><td>Indeed</td><td>Global generic</td><td>Volume, SEO</td><td>Bots, no matching</td><td>Quality over quantity</td></tr>
+<tr><td>Wellfound</td><td>Startup jobs</td><td>Salary transparency</td><td>Not game-focused</td><td>Game-specific + same transparency</td></tr>
+<tr><td>Amir Satvat Sheet</td><td>Community</td><td>Trust, referrals</td><td>Google Sheet, no scale</td><td>Platform version of this</td></tr>
+</table>
+
+<div class="box box">
+<strong>Positioning:</strong> High Game Focus + High Intelligence = HireGameDev (empty quadrant — our opportunity)
+</div>
+</div>
+
+<!-- 6 -->
+<div class="section">
+<h2>6. Exclusive Differentiators</h2>
+<p>Features that do not exist on any competing platform.</p>
+<table>
+<tr><th>#</th><th>Feature</th><th>Description</th><th>Phase</th></tr>
+<tr><td>1</td><td><strong>Shipped Title Verification</strong></td><td>Cross-references claimed games with IGDB database. Verified ✅ badge. "Blockbuster" badge for 1M+ sales titles. Nobody automates this.</td><td><span class="badge b-p1">Phase 1</span></td></tr>
+<tr><td>2</td><td><strong>Portable Skill Badges</strong></td><td>Complete a real game-dev test once → earn a permanent badge visible to ALL studios. Eliminates redundant take-home tests.</td><td><span class="badge b-p2">Phase 2</span></td></tr>
+<tr><td>3</td><td><strong>Team Composition Preview</strong></td><td>Job listings show the actual team: "You'd work with Jane (Lead, 8 yrs, 3 AAA titles)." No other platform shows this.</td><td><span class="badge b-p2">Phase 2</span></td></tr>
+<tr><td>4</td><td><strong>Layoff Rapid Response</strong></td><td>When layoffs hit, auto-activate: priority signup, fast-track matching, studio alerts. Platform version of Amir Satvat's sheet.</td><td><span class="badge b-p2">Phase 2</span></td></tr>
+<tr><td>5</td><td><strong>Game Salary Benchmarks</strong></td><td>Real data: "Senior Unity Dev in Pune: ₹12–18 LPA." Nobody has game-specific salary data for India.</td><td><span class="badge b-p2">Phase 2</span></td></tr>
+<tr><td>6</td><td><strong>Two-Way Interest Matching</strong></td><td>Both sides express interest before formal application. Mutual match → chat unlocks. Reduces spam.</td><td><span class="badge b-p1">Phase 1</span></td></tr>
+<tr><td>7</td><td><strong>Anti-Ghosting System</strong></td><td>14-day auto-decline. Public response rates. "Studio X responds to 94% of applications ✅"</td><td><span class="badge b-mvp">MVP</span></td></tr>
+</table>
+</div>
+
+<!-- 7 -->
+<div class="section">
+<h2>7. MVP Feature Specification</h2>
+<p><strong>Timeline:</strong> 13 weeks · <strong>Budget:</strong> ~₹620/month · <strong>Goal:</strong> 200 candidates + 20 studios + 5 hires</p>
+
+<h3>7.1 Authentication</h3>
+<table>
+<tr><th>Method</th><th>Details</th></tr>
+<tr><td>Email + Password</td><td>Standard registration with email verification</td></tr>
+<tr><td>Google OAuth</td><td>One-click login (most popular in India)</td></tr>
+<tr><td>Roles</td><td>Candidate · Studio · Admin</td></tr>
+</table>
+
+<h3>7.2 Candidate Profile</h3>
+<table>
+<tr><th>Field</th><th>Type</th><th>Required</th><th>India-Specific Notes</th></tr>
+<tr><td>Full Name, Photo, Email, Phone, City</td><td>Text/Image</td><td>Yes</td><td>Indian cities dropdown</td></tr>
+<tr><td>Job Title</td><td>Text</td><td>Yes</td><td>e.g. "Unity Developer", "3D Artist"</td></tr>
+<tr><td>Seniority</td><td>Dropdown</td><td>Yes</td><td>Fresher / Junior / Mid / Senior / Lead</td></tr>
+<tr><td>Years of Experience</td><td>Number</td><td>Yes</td><td>0 for freshers</td></tr>
+<tr><td>Skills</td><td>Multi-select</td><td>Yes (min 3)</td><td>From 130+ master list</td></tr>
+<tr><td>Current CTC</td><td>Number (LPA)</td><td>No</td><td>₹ Lakhs Per Annum</td></tr>
+<tr><td>Expected CTC</td><td>Number (LPA)</td><td>Yes</td><td>Used for salary matching</td></tr>
+<tr><td>Notice Period</td><td>Dropdown</td><td>Yes</td><td>Immediate / 15 / 30 / 60 / 90 days</td></tr>
+<tr><td>Open to Remote</td><td>Toggle</td><td>Yes</td><td></td></tr>
+<tr><td>Availability</td><td>Dropdown</td><td>Yes</td><td>Immediate / 15 days / 30 days</td></tr>
+<tr><td>Shipped Titles</td><td>Repeater</td><td>No</td><td>Game, studio, role, year</td></tr>
+<tr><td>Portfolio Links</td><td>URLs</td><td>No</td><td>ArtStation, GitHub, Behance, YouTube</td></tr>
+<tr><td>Open to Work Status</td><td>Dropdown</td><td>Yes</td><td>Actively Looking / Open to Offers / Not Looking</td></tr>
+</table>
+
+<h3>7.3 Studio Profile</h3>
+<table>
+<tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+<tr><td>Studio Name, Logo, Website</td><td>Text/Image/URL</td><td></td></tr>
+<tr><td>City + State</td><td>Dropdown</td><td>e.g. "Pune, Maharashtra"</td></tr>
+<tr><td>Size</td><td>Dropdown</td><td>1-10 / 11-50 / 51-200 / 200+</td></tr>
+<tr><td>Type</td><td>Dropdown</td><td>Game Studio / Outsourcing / Publisher / Indie</td></tr>
+<tr><td>Genres, Engines, Shipped Titles</td><td>Multi-select/Text</td><td></td></tr>
+<tr><td>Culture Tags</td><td>Multi-select</td><td>No Crunch, Remote-friendly, etc.</td></tr>
+<tr><td>GST Number</td><td>Text</td><td>For invoicing compliance</td></tr>
+<tr><td>Verification Badge</td><td>Boolean</td><td>Admin-approved ✅</td></tr>
+</table>
+
+<h3>7.4 Job Listings</h3>
+<table>
+<tr><th>Field</th><th>Details</th></tr>
+<tr><td>Types</td><td>Full-time · Contract · Internship</td></tr>
+<tr><td>Seniority</td><td>Fresher · Junior · Mid · Senior · Lead</td></tr>
+<tr><td>Categories</td><td>Programming · Art · Design · Audio · QA · Production</td></tr>
+<tr><td>Salary</td><td><strong>Mandatory</strong> range in LPA (no "competitive")</td></tr>
+<tr><td>Location</td><td>Remote / Hybrid / On-site + City</td></tr>
+<tr><td>Validation</td><td>Min 3 skills, min 100-word description, auto-expire 30 days</td></tr>
+</table>
+
+<h3>7.5 Search & Filters</h3>
+<ul>
+<li>Free text search (title, studio, skills, city)</li>
+<li>Filters: Role, Seniority, Engine, City, Remote/On-site, Salary (LPA slider), Type</li>
+<li><strong>"Fresher-Friendly" toggle</strong> — critical for Indian market</li>
+<li>Sort: Newest · Best Match · Highest Salary</li>
+</ul>
+
+<h3>7.6 Application System</h3>
+<ul>
+<li>One-click apply → sends profile to studio</li>
+<li>Status: Applied → Viewed → Shortlisted → Interview → Offer → Hired / Rejected</li>
+<li>Shows: Current CTC, Expected CTC, Notice Period</li>
+<li>Anti-ghosting: 7-day reminder, 14-day auto-decline</li>
+</ul>
+
+<h3>7.7 Matching Algorithm</h3>
+<table>
+<tr><th>Factor</th><th>Weight</th><th>Logic</th></tr>
+<tr><td>Skills</td><td>50%</td><td>Matching required / Total required × 100</td></tr>
+<tr><td>Seniority</td><td>20%</td><td>Exact=100%, ±1=70%, ±2=40%</td></tr>
+<tr><td>Location</td><td>15%</td><td>Same city=100%, Remote=80%, Diff=30%</td></tr>
+<tr><td>Salary</td><td>15%</td><td>Overlap=100%, Partial=50%, None=0%</td></tr>
+<tr><td>Fresher Bonus</td><td>+10%</td><td>If fresher + job accepts freshers</td></tr>
+</table>
+
+<h3>7.8 Dashboards</h3>
+<p><strong>Candidate:</strong> Top 5 matches · Application status · Profile views · Completeness bar · Activity feed</p>
+<p><strong>Studio:</strong> Active jobs · New applicants · Pending actions · Activity feed</p>
+
+<h3>7.9 Notifications</h3>
+<p>In-app (SignalR) + Email (Resend API via HTTPS — no SMTP). Types: New match, status change, interview, reminders.</p>
+
+<h3>7.10 Payments</h3>
+<p>Razorpay (UPI, Net Banking, Cards). GST invoices. Candidates free. Studios: 3 free jobs, then ₹4,999/mo Pro with 7-day trial.</p>
+
+<h3>7.11 AI Resume Extraction</h3>
+<p>Candidate uploads PDF or pastes LinkedIn URL → PdfPig extracts text (free, local) → Google Gemini structures it (free API) → Profile auto-fills in 2 minutes. No permanent file storage. PDF deleted after extraction.</p>
+
+<h3>7.12 Admin Panel (MVP)</h3>
+<p>User management · Job moderation · Application oversight · Payment tracking · Platform settings · Audit log. (Full 10-section panel in Phase 1–2.)</p>
+
+<h3>7.13 Mobile-Responsive Design</h3>
+<p>Bootstrap 5. Touch-friendly. Optimized for 4G and budget Android phones. 80%+ Indian users are mobile-first.</p>
+
+<h3>7.14 Legal Compliance</h3>
+<p>Terms of Service · Privacy Policy (DPDP Act 2023) · Cookie consent · Data deletion · Grievance Officer (IT Rules 2021) · Data hosted in India.</p>
+</div>
+
+<!-- 8 -->
+<div class="section">
+<h2>8. Phase 1 — Validation (Months 4–6)</h2>
+<p><strong>Goal:</strong> 2,000 candidates · 100 studios · 50 hires</p>
+<table>
+<tr><th>#</th><th>Feature</th><th>Details</th></tr>
+<tr><td>1</td><td>Match Algorithm v2</td><td>Add shipped title matching (genre, engine, platform). "Why this match?" breakdown.</td></tr>
+<tr><td>2</td><td>IGDB Verification</td><td>Auto-verify shipped titles. Cover art. Verified ✅ badge.</td></tr>
+<tr><td>3</td><td>Two-Way Interest</td><td>Mutual opt-in before application. Chat unlock on match.</td></tr>
+<tr><td>4</td><td>Outbound Recruiting</td><td>Studios browse and invite candidates.</td></tr>
+<tr><td>5</td><td>Steam + Discord + GitHub Login</td><td>Additional social login options.</td></tr>
+<tr><td>6</td><td>In-App Messaging</td><td>Threaded messages between candidates and studios.</td></tr>
+<tr><td>7</td><td>Interview Scheduling</td><td>Slot picker with timezone support.</td></tr>
+<tr><td>8</td><td>Rejection Templates</td><td>Pre-written messages. Auto-suggest other jobs to rejected candidates.</td></tr>
+<tr><td>9</td><td>Shortlist / Pipeline</td><td>Kanban board for studio applicant management.</td></tr>
+<tr><td>10</td><td>SEO Landing Pages</td><td>/jobs/unity-developer-pune auto-generated pages.</td></tr>
+<tr><td>11</td><td>AI Auto-Tagging</td><td>Extract skills from job descriptions automatically.</td></tr>
+<tr><td>12</td><td>Studio Analytics</td><td>Views, applications, match quality, time-to-hire.</td></tr>
+<tr><td>13</td><td>Full Admin Panel</td><td>All 10 sections operational.</td></tr>
+</table>
+</div>
+
+<!-- 9 -->
+<div class="section">
+<h2>9. Phase 2 — Growth & Monetization (Months 7–12)</h2>
+<p><strong>Goal:</strong> 10,000 candidates · 500 studios · 200 hires · ₹25L/month revenue</p>
+<table>
+<tr><th>#</th><th>Feature</th><th>Details</th></tr>
+<tr><td>1</td><td>Candidate Premium (₹299/mo)</td><td>Who Viewed Me, Boost, Insights, Priority, Salary data</td></tr>
+<tr><td>2</td><td>Studio Pro (₹4,999/mo)</td><td>Unlimited jobs, candidate search, analytics, 5 users. 7-day trial.</td></tr>
+<tr><td>3</td><td>Pay-Per-Hire</td><td>₹5,000–₹35,000 per successful hire</td></tr>
+<tr><td>4</td><td>Skill Challenges</td><td>Create, assign, grade. Portable badges.</td></tr>
+<tr><td>5</td><td>Team Finder (LFG)</td><td>Game jams, indie teams, prototypes.</td></tr>
+<tr><td>6</td><td>Salary Benchmarks</td><td>Real market data by role + engine + city.</td></tr>
+<tr><td>7</td><td>Referral System</td><td>Coworker referrals from shipped titles data.</td></tr>
+<tr><td>8</td><td>Review System</td><td>Two-way reviews after contracts.</td></tr>
+<tr><td>9</td><td>AI Job Optimizer</td><td>Real-time suggestions on job descriptions.</td></tr>
+<tr><td>10</td><td>AI Profile Optimizer</td><td>"Add Unreal to increase matches by 12%."</td></tr>
+<tr><td>11</td><td>AI Resume Parser</td><td>PDF/LinkedIn → structured profile.</td></tr>
+<tr><td>12</td><td>Layoff Rapid Response</td><td>Priority matching when layoffs hit.</td></tr>
+<tr><td>13</td><td>Team Preview</td><td>Show candidates their future team.</td></tr>
+<tr><td>14</td><td>WhatsApp Notifications</td><td>Interview reminders via WhatsApp.</td></tr>
+<tr><td>15</td><td>Offer & Negotiation</td><td>In-platform offer flow.</td></tr>
+</table>
+</div>
+
+<!-- 10 -->
+<div class="section">
+<h2>10. Phase 3 — Scale (Months 13–24)</h2>
+<p><strong>Goal:</strong> 50,000 candidates · 2,000 studios · ₹1.5Cr/month</p>
+<table>
+<tr><th>#</th><th>Feature</th></tr>
+<tr><td>1</td><td>Enterprise Plan (₹14,999/mo) with ATS integration</td></tr>
+<tr><td>2</td><td>ML Matching Engine (ML.NET, trained on 500+ hires)</td></tr>
+<tr><td>3</td><td>Mobile App (iOS + Android)</td></tr>
+<tr><td>4</td><td>Advanced Analytics + Diversity Dashboard</td></tr>
+<tr><td>5</td><td>AI Chatbot + Interview Prep</td></tr>
+<tr><td>6</td><td>Studio Culture Profiles (video tours)</td></tr>
+<tr><td>7</td><td>Multi-Language (English, Japanese, Korean)</td></tr>
+<tr><td>8</td><td>API for Studios</td></tr>
+<tr><td>9</td><td>Glassdoor-Style Studio Reviews</td></tr>
+<tr><td>10</td><td>Slack Integration</td></tr>
+</table>
+</div>
+
+<!-- 11 -->
+<div class="section">
+<h2>11. Phase 4 — Ecosystem (Months 25–36)</h2>
+<p><strong>Goal:</strong> 200,000+ candidates · ₹8Cr+/year · Industry default</p>
+<table>
+<tr><th>#</th><th>Feature</th></tr>
+<tr><td>1</td><td>Mentorship Matching</td></tr>
+<tr><td>2</td><td>Events Calendar (GDC, NASSCOM, Game Jams)</td></tr>
+<tr><td>3</td><td>Learning Resources + Skill Gap Courses</td></tr>
+<tr><td>4</td><td>AI Layoff Early Warning</td></tr>
+<tr><td>5</td><td>Annual Game Industry Salary Report</td></tr>
+<tr><td>6</td><td>International Expansion</td></tr>
+<tr><td>7</td><td>Freelance Marketplace with Escrow</td></tr>
+</table>
+</div>
+
+<!-- 12-13 -->
+<div class="section">
+<h2>12. Profile Boost System</h2>
+<p>Match score × 1.15 (15% bump) in search results only. Real match % unchanged. Daily cap: 50 impressions. Visual: ⭐ "Active Candidate" badge. Premium: permanent. Free: ₹99 for 7 days.</p>
+
+<h2>13. Pricing & Revenue Model</h2>
+<h3>Candidates</h3>
+<table>
+<tr><th>Tier</th><th>Price</th><th>Key Features</th></tr>
+<tr><td>Free</td><td>₹0</td><td>Profile, browse, apply, match %, status tracking — all unlimited</td></tr>
+<tr><td>Premium</td><td>₹299/mo or ₹2,499/yr</td><td>Who Viewed Me, Boost, Insights, Priority, Salary data. 7-day trial.</td></tr>
+</table>
+
+<h3>Studios</h3>
+<table>
+<tr><th>Tier</th><th>Price</th><th>Key Features</th></tr>
+<tr><td>Free</td><td>₹0</td><td>3 active jobs, limited applicants</td></tr>
+<tr><td>Pro</td><td>₹4,999/mo</td><td>Unlimited jobs, candidate search, analytics, 5 users. <strong>7-day free trial.</strong></td></tr>
+<tr><td>Enterprise</td><td>₹14,999/mo</td><td>Unlimited everything, ATS, API, dedicated support. <strong>14-day trial.</strong></td></tr>
+<tr><td>Pay-Per-Hire</td><td>₹5K–₹35K</td><td>No monthly fee. Pay only on successful hire.</td></tr>
+</table>
+</div>
+
+<!-- 14 -->
+<div class="section">
+<h2>14. Engagement & Retention Strategy</h2>
+<table>
+<tr><th>#</th><th>Loop</th><th>Trigger</th><th>Goal</th></tr>
+<tr><td>1</td><td>New Match Alerts</td><td>New job matches 80%+</td><td>Bring candidates back daily</td></tr>
+<tr><td>2</td><td>Who Viewed Profile</td><td>Studio views profile</td><td>Curiosity → premium conversion</td></tr>
+<tr><td>3</td><td>Profile Completeness</td><td>Profile < 100%</td><td>Complete profiles → better matches</td></tr>
+<tr><td>4</td><td>Application Status</td><td>Status change</td><td>Reduce anxiety → build trust</td></tr>
+<tr><td>5</td><td>Skill Gap Insights</td><td>Weekly analysis</td><td>Career tool → long-term retention</td></tr>
+</table>
+</div>
+
+<!-- 15 -->
+<div class="section">
+<h2>15. Technical Architecture</h2>
+<table>
+<tr><th>Layer</th><th>Technology</th><th>Reason</th></tr>
+<tr><td>Frontend</td><td>ASP.NET Core Razor Pages</td><td>Existing expertise, server-side SEO</td></tr>
+<tr><td>Backend</td><td>ASP.NET Core 8</td><td>C#, high performance, SignalR built-in</td></tr>
+<tr><td>Database</td><td>PostgreSQL</td><td>Free, reliable, EF Core support</td></tr>
+<tr><td>ORM</td><td>Entity Framework Core</td><td>Built-in with .NET</td></tr>
+<tr><td>Auth</td><td>ASP.NET Identity</td><td>Roles, social login, built-in</td></tr>
+<tr><td>Real-time</td><td>SignalR</td><td>Built-in, notifications + chat</td></tr>
+<tr><td>Background Jobs</td><td>Hangfire</td><td>Reminders, expiry checks</td></tr>
+<tr><td>Cache</td><td>Redis</td><td>SignalR backplane + sessions</td></tr>
+<tr><td>Reverse Proxy</td><td>Nginx + Let's Encrypt</td><td>SSL, static files</td></tr>
+<tr><td>Email</td><td>Resend API (HTTPS)</td><td>3K/mo free, <strong>NO SMTP</strong></td></tr>
+<tr><td>Payments</td><td>Razorpay (.NET SDK)</td><td>UPI, GST, India-native</td></tr>
+<tr><td>AI</td><td>Google Gemini (free) → Azure OpenAI</td><td>Resume extraction, auto-tagging</td></tr>
+<tr><td>PDF Parsing</td><td>PdfPig (NuGet, MIT)</td><td>Free, local, no API needed</td></tr>
+</table>
+
+<div class="code">Users (Browser) → Cloudflare CDN → Nginx (443) → .NET Core (5000)
+                                    ├── PostgreSQL (5432, localhost)
+                                    ├── Redis (6379, localhost)
+                                    └── Local Storage (/uploads)
+
+External APIs (HTTPS 443 — Safe):
+  Resend · Razorpay · Gemini · IGDB · Azure OpenAI</div>
+</div>
+
+<!-- 16 -->
+<div class="section">
+<h2>16. Database Schema (12 Tables)</h2>
+<table>
+<tr><th>Table</th><th>Purpose</th><th>Key Columns</th><th>Key Indexes</th></tr>
+<tr><td><strong>Users</strong></td><td>Login credentials, roles</td><td>Id, Email, Role, GoogleId, IsActive</td><td>Email (U), Role, GoogleId (U)</td></tr>
+<tr><td><strong>CandidateProfiles</strong></td><td>Developer details</td><td>UserId, JobTitle, Seniority, CTC, City, Skills, Status</td><td>UserId (U), Status, City, Seniority, Composite(Status+City+Seniority)</td></tr>
+<tr><td><strong>StudioProfiles</strong></td><td>Studio details</td><td>UserId, Name, City, Size, Type, GST, IsVerified</td><td>UserId (U), City, Type, IsVerified</td></tr>
+<tr><td><strong>Skills</strong></td><td>Master skill list (130+)</td><td>Id, Name, Category</td><td>Name (U), Category</td></tr>
+<tr><td><strong>CandidateSkills</strong></td><td>Candidate ↔ Skills</td><td>CandidateId, SkillId, Proficiency</td><td>CandidateId, SkillId, Composite (U)</td></tr>
+<tr><td><strong>ShippedTitles</strong></td><td>Games shipped</td><td>CandidateId, GameName, Studio, Role, Year, IsVerified</td><td>CandidateId, GameName</td></tr>
+<tr><td><strong>Jobs</strong></td><td>Job listings</td><td>StudioId, Title, Type, Seniority, Salary, City, Status</td><td>Status, City, Seniority, Composite(Status+Category+City+Seniority), ExpiresAt</td></tr>
+<tr><td><strong>JobSkills</strong></td><td>Job ↔ Skills</td><td>JobId, SkillId, IsRequired</td><td>JobId, SkillId, Composite (U)</td></tr>
+<tr><td><strong>Applications</strong></td><td>Candidate applies to Job</td><td>JobId, CandidateId, MatchScore, Status, LastAction</td><td>JobId, CandidateId, Composite(Status+LastAction) for anti-ghosting, Unique(JobId+CandidateId)</td></tr>
+<tr><td><strong>Notifications</strong></td><td>Alerts</td><td>UserId, Type, Title, IsRead, CreatedAt</td><td>Composite(UserId+IsRead+CreatedAt)</td></tr>
+<tr><td><strong>ProfileViews</strong></td><td>Who viewed whom</td><td>ViewerStudioId, CandidateId, ViewedAt</td><td>Composite(CandidateId+ViewedAt)</td></tr>
+<tr><td><strong>Payments</strong></td><td>Transactions</td><td>UserId, Type, Amount, RazorpayId, Status, GST</td><td>RazorpayPaymentId (U), BillingCycleEnd</td></tr>
+</table>
+<p><strong>Total: ~30 indexes.</strong> Optimized for read-heavy search queries. Composite indexes match real query patterns.</p>
+</div>
+
+<!-- 17 -->
+<div class="section">
+<h2>17. Skills Master List (130+ Skills)</h2>
+<p>Pre-seeded on Day 1 from IGDB, GDC Survey, Hitmarker analysis, and GitHub repos.</p>
+<table>
+<tr><th>Category</th><th>Count</th><th>Examples</th></tr>
+<tr><td>Engines</td><td>16</td><td>Unity, Unreal 5, Godot, Cocos2d-x, CryEngine, GameMaker</td></tr>
+<tr><td>Languages</td><td>18</td><td>C#, C++, Python, Java, JavaScript, Lua, Rust, HLSL, GLSL</td></tr>
+<tr><td>Art Tools</td><td>18</td><td>Blender, Maya, ZBrush, Substance, Photoshop, Houdini, Spine 2D</td></tr>
+<tr><td>Design/Audio Tools</td><td>17</td><td>FMOD, Wwise, Unreal Blueprints, Twine, Figma, Jira</td></tr>
+<tr><td>DevOps/Infra</td><td>16</td><td>Git, Perforce, Jenkins, Docker, AWS, PlayFab, Photon, Steamworks</td></tr>
+<tr><td>Genres</td><td>28</td><td>Mobile Casual, Hyper-Casual, RPG, FPS, Battle Royale, Roguelike, Casino, EdTech</td></tr>
+<tr><td>Platforms</td><td>13</td><td>Android, iOS, PC/Steam, PS5, Xbox, Switch, WebGL, Meta Quest</td></tr>
+<tr><td>Role Categories</td><td>35</td><td>Gameplay Programming, VFX, Level Design, Sound Design, QA Automation</td></tr>
+</table>
+</div>
+
+<!-- 18 -->
+<div class="section">
+<h2>18. AI-Powered Resume Extraction</h2>
+<div class="box-blue box">
+<strong>Cost: ₹0 for MVP.</strong> PdfPig (free, local) extracts text from PDF → Google Gemini (free tier: 1M tokens/day) structures it into profile fields → Form auto-fills → PDF deleted. Total onboarding: 2 minutes.
+</div>
+<p><strong>3 Input Methods:</strong></p>
+<ol>
+<li><strong>Upload PDF Resume</strong> → PdfPig reads text → Gemini structures → Auto-fill</li>
+<li><strong>Paste LinkedIn URL</strong> → Fetch public page → Gemini structures → Auto-fill</li>
+<li><strong>Paste Resume Text</strong> → Gemini structures → Auto-fill</li>
+</ol>
+<p><strong>Extracted Fields:</strong> Name, Title, Seniority, Years Exp, CTC, City, Skills (engines/languages/tools/genres/platforms), Shipped Titles, Portfolio URLs, Education.</p>
+<p><strong>Safety:</strong> 2MB max, PDF magic byte check, auto-delete after extraction, no permanent storage.</p>
+</div>
+
+<!-- 19 -->
+<div class="section">
+<h2>19. Admin Panel (10 Sections)</h2>
+<table>
+<tr><th>#</th><th>Section</th><th>Key Capabilities</th></tr>
+<tr><td>A</td><td><strong>Dashboard</strong></td><td>Real-time stats, trends charts, alerts queue, top performers</td></tr>
+<tr><td>B</td><td><strong>User Management</strong></td><td>View/edit/suspend/ban users, verify profiles, grant premium, impersonate login</td></tr>
+<tr><td>C</td><td><strong>Job Moderation</strong></td><td>Approve/reject/pause/delete listings, flagged queue, extend expiry</td></tr>
+<tr><td>D</td><td><strong>Application Oversight</strong></td><td>All applications across platform, ghosting detection, force status updates</td></tr>
+<tr><td>E</td><td><strong>Payments & Billing</strong></td><td>All transactions, refunds, retry failed, GST invoices, revenue dashboard (MRR/ARR/churn)</td></tr>
+<tr><td>F</td><td><strong>Content Moderation</strong></td><td>User reports queue, skills management (add/merge/deactivate)</td></tr>
+<tr><td>G</td><td><strong>Communication</strong></td><td>Broadcast emails, in-app banners, direct messages to users</td></tr>
+<tr><td>H</td><td><strong>Platform Settings</strong></td><td>Feature flags, limits, API keys, trial duration, GST % — all changeable without code deploy</td></tr>
+<tr><td>I</td><td><strong>Audit Log</strong></td><td>Every admin action logged: who, what, when, why. Legal compliance.</td></tr>
+<tr><td>J</td><td><strong>System Health</strong></td><td>CPU/RAM/Disk, DB size, SignalR connections, Hangfire queue, error log, email delivery</td></tr>
+</table>
+<p><strong>New DB Tables:</strong> AuditLogs, Reports, AdminSettings, BroadcastEmails</p>
+</div>
+
+<!-- 20 -->
+<div class="section">
+<h2>20. Hosting & Infrastructure</h2>
+<table>
+<tr><th>Component</th><th>Provider</th><th>Specs</th><th>Cost</th></tr>
+<tr><td>VPS</td><td>Hostinger KVM 2 — Mumbai 🇮🇳</td><td>2 vCPU, 8 GB RAM, 100 GB NVMe</td><td>₹549/mo</td></tr>
+<tr><td>Domain</td><td>Namecheap (.in or .com)</td><td>—</td><td>₹70/mo</td></tr>
+<tr><td>Email</td><td>Resend API (HTTPS, no SMTP)</td><td>3,000/mo free</td><td>₹0</td></tr>
+<tr><td>SSL</td><td>Let's Encrypt</td><td>Auto-renewal</td><td>₹0</td></tr>
+<tr><td>Database</td><td>PostgreSQL on VPS</td><td>Localhost only</td><td>₹0</td></tr>
+<tr><td>Cache</td><td>Redis on VPS</td><td>Localhost only</td><td>₹0</td></tr>
+<tr><td>Payments</td><td>Razorpay</td><td>2% per transaction</td><td>₹0 setup</td></tr>
+<tr><td>CDN</td><td>Cloudflare</td><td>Free tier</td><td>₹0</td></tr>
+<tr><td colspan="3"><strong>Total MVP Infrastructure</strong></td><td><strong>~₹620/month</strong></td></tr>
+</table>
+
+<div class="box-red box">
+<strong>CRITICAL RULE:</strong> Never install Postfix/Sendmail on VPS. Never send email from VPS directly. Always use Resend API (HTTPS port 443). This prevents the SMTP ban that occurred previously.
+</div>
+</div>
+
+<!-- 21 -->
+<div class="section">
+<h2>21. Legal & Compliance (India)</h2>
+<table>
+<tr><th>Requirement</th><th>Law</th><th>Implementation</th></tr>
+<tr><td>Privacy Policy</td><td>DPDP Act 2023</td><td>Static page, consent on signup</td></tr>
+<tr><td>Terms of Service</td><td>Indian Contract Act</td><td>Static page, acceptance on signup</td></tr>
+<tr><td>Data Deletion</td><td>DPDP Act (Right to Erasure)</td><td>Settings page + admin action</td></tr>
+<tr><td>Cookie Consent</td><td>DPDP Act</td><td>Banner on first visit</td></tr>
+<tr><td>Grievance Officer</td><td>IT Rules 2021</td><td>Contact details on /legal page</td></tr>
+<tr><td>Age Gate</td><td>DPDP Act</td><td>18+ confirmation on signup</td></tr>
+<tr><td>Data Localization</td><td>DPDP Act</td><td>Mumbai datacenter (Hostinger)</td></tr>
+<tr><td>GST Invoicing</td><td>GST Act</td><td>Razorpay auto-invoicing</td></tr>
+</table>
+</div>
+
+<!-- 22 -->
+<div class="section">
+<h2>22. Build Timeline (13 Weeks)</h2>
+<table>
+<tr><th>Weeks</th><th>Milestone</th><th>Deliverables</th></tr>
+<tr><td>1–2</td><td>Foundation</td><td>Project setup, PostgreSQL, EF Core, Auth (Email + Google), Layout, VPS deployment</td></tr>
+<tr><td>3–4</td><td>Profiles</td><td>Candidate profile + Studio profile (all India fields), AI resume extraction, Skills seed data</td></tr>
+<tr><td>5–6</td><td>Jobs</td><td>Job posting form, Job search + filters (city, fresher, LPA), Job detail page</td></tr>
+<tr><td>7–8</td><td>Applications</td><td>Apply flow, Status tracking, Matching algorithm, Anti-ghosting logic</td></tr>
+<tr><td>9–10</td><td>Dashboards</td><td>Candidate dashboard, Studio dashboard, Notifications (SignalR + Resend)</td></tr>
+<tr><td>11</td><td>Payments + Admin</td><td>Razorpay integration, Admin panel (users, jobs, settings, audit log)</td></tr>
+<tr><td>12</td><td>Polish</td><td>Legal pages, Mobile testing, SEO basics, Bug fixes, Security audit</td></tr>
+<tr><td><strong>13</strong></td><td><strong>LAUNCH 🚀</strong></td><td><strong>Production deploy, first users, monitoring active</strong></td></tr>
+</table>
+</div>
+
+<!-- 23 -->
+<div class="section">
+<h2>23. Budget Projections</h2>
+<h3>MVP (Months 1–3)</h3>
+<table>
+<tr><th>Item</th><th>Monthly Cost</th></tr>
+<tr><td>VPS Hosting (Hostinger Mumbai)</td><td>₹549</td></tr>
+<tr><td>Domain</td><td>₹70</td></tr>
+<tr><td>Email (Resend)</td><td>₹0</td></tr>
+<tr><td>AI (Gemini Free Tier)</td><td>₹0</td></tr>
+<tr><td>Payments (Razorpay)</td><td>₹0</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>~₹620/month</strong></td></tr>
+</table>
+
+<h3>Growth (Months 7–12)</h3>
+<table>
+<tr><th>Item</th><th>Monthly Cost</th></tr>
+<tr><td>VPS (DigitalOcean Bangalore)</td><td>₹1,500</td></tr>
+<tr><td>Email (Resend Pro)</td><td>₹1,600</td></tr>
+<tr><td>AI (Azure OpenAI)</td><td>₹5,000</td></tr>
+<tr><td>CDN + Storage</td><td>₹2,000</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>~₹10,000/month</strong></td></tr>
+</table>
+</div>
+
+<!-- 24 -->
+<div class="section">
+<h2>24. Revenue Projections</h2>
+<table>
+<tr><th>Period</th><th>Candidates</th><th>Studios</th><th>Paying Studios</th><th>Premium Candidates</th><th>MRR</th></tr>
+<tr><td>Month 3 (Launch)</td><td>200</td><td>20</td><td>0</td><td>0</td><td>₹0</td></tr>
+<tr><td>Month 6</td><td>2,000</td><td>100</td><td>10</td><td>0</td><td>₹50,000</td></tr>
+<tr><td>Month 12</td><td>10,000</td><td>500</td><td>75</td><td>500</td><td>₹5,25,000</td></tr>
+<tr><td>Month 18</td><td>30,000</td><td>1,200</td><td>200</td><td>1,500</td><td>₹15,00,000</td></tr>
+<tr><td>Month 24</td><td>50,000</td><td>2,000</td><td>350</td><td>2,500</td><td>₹25,00,000</td></tr>
+<tr><td>Month 36</td><td>2,00,000</td><td>5,000</td><td>1,000</td><td>10,000</td><td>₹80,00,000</td></tr>
+</table>
+</div>
+
+<!-- 25 -->
+<div class="section">
+<h2>25. Risk Analysis & Mitigation</h2>
+<table>
+<tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr>
+<tr><td>Low initial studio adoption</td><td>High</td><td>High</td><td>Onboard 20 studios manually before launch. Offer free Pro for 3 months.</td></tr>
+<tr><td>Spam/fake job listings</td><td>High</td><td>Medium</td><td>Admin moderation, studio verification, user reports, auto-flagging.</td></tr>
+<tr><td>Candidate ghosting (accept then no-show)</td><td>Medium</td><td>Medium</td><td>Track no-shows, penalize repeat offenders.</td></tr>
+<tr><td>VPS downtime</td><td>Low</td><td>High</td><td>UptimeRobot monitoring, auto-restart, backup VPS ready.</td></tr>
+<tr><td>Competitor copies features</td><td>Medium</td><td>Medium</td><td>Speed to market, community trust, shipped-title data moat.</td></tr>
+<tr><td>DPDP Act compliance issues</td><td>Low</td><td>Very High</td><td>Legal review before launch, data deletion ready, consent management.</td></tr>
+<tr><td>AI extraction accuracy</td><td>Medium</td><td>Low</td><td>Always show extracted data for candidate review before saving.</td></tr>
+<tr><td>Payment failures</td><td>Medium</td><td>Medium</td><td>Razorpay retry logic, manual override in admin, grace periods.</td></tr>
+</table>
+</div>
+
+<div class="footer">
+  HireGameDev · Project Specification Document v1.0 · June 2025 · Confidential<br>
+  Prepared for client review. All rights reserved.
+</div>
+
+</body>
+</html>

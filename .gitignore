@@ -1,0 +1,144 @@
+# ================================
+# .NET / Visual Studio
+# ================================
+
+## Build output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+
+## Visual Studio
+.vs/
+.vscode/
+
+## Rider / JetBrains
+.idea/
+*.sln.iml
+
+## User-specific files
+*.user
+*.userosscache
+*.suo
+*.rsuser
+
+## Visual Studio Code
+.history/
+*.code-workspace
+
+# ================================
+# .NET Generated Files
+# ================================
+
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+*.tmp
+*.temp
+
+# ================================
+# NuGet
+# ================================
+
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Keep NuGet package lock files if the project uses them
+# packages.lock.json
+
+# ================================
+# ASP.NET Core
+# ================================
+
+# Local HTTPS development certificates
+*.pfx
+
+# ASP.NET Core generated files
+wwwroot/lib/
+
+# ================================
+# Configuration / Secrets
+# ================================
+
+# Local development configuration
+appsettings.Development.json
+appsettings.Local.json
+
+# User Secrets
+secrets.json
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# ================================
+# Entity Framework
+# ================================
+
+# EF-generated database files if SQLite is ever used
+*.db
+*.db-shm
+*.db-wal
+
+# ================================
+# Logs
+# ================================
+
+logs/
+*.log
+
+# ================================
+# Test Results
+# ================================
+
+TestResults/
+*.trx
+coverage/
+coverage-report/
+
+# ================================
+# OS Files
+# ================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ================================
+# Temporary Files
+# ================================
+
+*.bak
+*.backup
+*.orig
+*.swp
+*.swo
+*~
+*.pid
+
+# ================================
+# Publish Output
+# ================================
+
+publish/
+Publish/
+artifacts/
+
+# ================================
+# Local Tooling
+# ================================
+
+.dotnet/
