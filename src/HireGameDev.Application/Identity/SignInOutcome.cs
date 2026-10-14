@@ -4,11 +4,11 @@ public enum SignInOutcome
 {
     Succeeded,
 
-    /// <summary>Unknown user or wrong credentials. Deliberately indistinguishable.</summary>
+    /// <summary>No account is linked to the given login.</summary>
     Failed,
 
     LockedOut,
 
-    /// <summary>Credentials were valid, but the account's email has not been confirmed yet.</summary>
+    /// <summary>The account exists but its email has not been confirmed.</summary>
     EmailNotConfirmed
 }

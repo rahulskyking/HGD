@@ -2,16 +2,20 @@
 @using HireGameDev.Domain.Enums
 @model ExternalLoginModel
 @{
-    ViewData["Title"] = "Finish creating your account";
+    ViewData["Title"] = "One last thing";
 }
 
+@*
+    Shown only when someone new used the plain "Sign in" buttons (no role chosen yet).
+    Sign-up from the landing page carries the role and never lands here.
+*@
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
         <h1 class="h3 mb-3">@ViewData["Title"]</h1>
 
         <p>
-            You've signed in with <strong>@Model.ProviderDisplayName</strong> as <strong>@Model.Email</strong>.
-            Tell us who you are and we'll create your HireGameDev account.
+            You've signed in with <strong>@Model.ProviderDisplayName</strong> as <strong>@Model.Email</strong>,
+            but there's no HireGameDev account for it yet. Tell us who you are and we'll create one.
         </p>
 
         <form method="post" asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" novalidate>
@@ -22,13 +26,13 @@
 
             <fieldset class="mb-3">
                 <legend class="form-label fs-6">I am a</legend>
-                <div class="form-check form-check-inline">
+                <div class="form-check">
                     <input class="form-check-input" type="radio" asp-for="Input.Role" value="@UserRole.Candidate" id="roleCandidate" />
-                    <label class="form-check-label" for="roleCandidate">Game developer (candidate)</label>
+                    <label class="form-check-label" for="roleCandidate">Game developer — looking for work</label>
                 </div>
-                <div class="form-check form-check-inline">
+                <div class="form-check">
                     <input class="form-check-input" type="radio" asp-for="Input.Role" value="@UserRole.Studio" id="roleStudio" />
-                    <label class="form-check-label" for="roleStudio">Studio (hiring)</label>
+                    <label class="form-check-label" for="roleStudio">Studio — hiring</label>
                 </div>
                 <span asp-validation-for="Input.Role" class="text-danger d-block"></span>
             </fieldset>
@@ -38,10 +42,10 @@
                 <a asp-page="/Privacy">Privacy Policy</a>.
             </p>
 
-            <button type="submit" class="btn btn-primary w-100">Create account</button>
+            <button type="submit" class="btn btn-primary w-100">Create my account</button>
         </form>
 
-        <p class="mt-4 text-center">
+        <p class="mt-4 text-center small">
             <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Cancel</a>
         </p>
     </div>

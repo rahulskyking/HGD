@@ -6,11 +6,10 @@ public enum ExternalSignInStatus
 {
     SignedIn,
 
-    LockedOut,
-
-    /// <summary>No account exists for this external identity yet; the user must pick a role to create one.</summary>
+    /// <summary>No account exists for this external identity and no role was given; ask the user which role to create.</summary>
     RegistrationRequired,
 
+    /// <summary>Could not sign in; <see cref="ExternalSignInResult.Error"/> explains why in user-facing terms.</summary>
     Failed
 }
 
@@ -21,9 +20,6 @@ public sealed record ExternalSignInResult(
 {
     public static ExternalSignInResult SignedIn() =>
         new(ExternalSignInStatus.SignedIn, null, null);
-
-    public static ExternalSignInResult LockedOut() =>
-        new(ExternalSignInStatus.LockedOut, null, null);
 
     public static ExternalSignInResult RegistrationRequired(ExternalLoginDetails externalLogin) =>
         new(ExternalSignInStatus.RegistrationRequired, externalLogin, null);

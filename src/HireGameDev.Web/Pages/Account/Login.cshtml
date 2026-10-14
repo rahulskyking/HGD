@@ -1,4 +1,5 @@
 @page
+@using HireGameDev.Domain.Enums
 @model LoginModel
 @{
     ViewData["Title"] = "Sign in";
@@ -6,46 +7,20 @@
 
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
-        <h1 class="h3 mb-3">@ViewData["Title"]</h1>
+        <h1 class="h3 mb-1">@ViewData["Title"]</h1>
+        <p class="text-muted mb-4">Use the account you joined with.</p>
 
-        <form method="post" asp-route-returnUrl="@Model.ReturnUrl" novalidate>
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger" role="alert">@Model.ErrorMessage</div>
+        }
 
-            @if (Model.EmailNotConfirmed)
-            {
-                <p>
-                    <a asp-page="./ResendEmailConfirmation" asp-route-email="@Model.Input.Email">Resend the confirmation email</a>
-                </p>
-            }
+        <partial name="_ExternalLoginButtonsPartial" model="new ExternalLoginButtons(null, Model.ReturnUrl)" />
 
-            <div class="mb-3">
-                <label asp-for="Input.Email" class="form-label"></label>
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Input.Password" class="form-label"></label>
-                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-
-            <div class="form-check mb-3">
-                <input asp-for="Input.RememberMe" class="form-check-input" />
-                <label asp-for="Input.RememberMe" class="form-check-label"></label>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Sign in</button>
-        </form>
-
-        <partial name="_ExternalLoginButtonsPartial" model="@Model.ReturnUrl" />
-
-        <p class="mt-4 text-center">
-            New to HireGameDev? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create an account</a>
+        <p class="mt-4 text-center small">
+            New to HireGameDev?
+            <a asp-page="./SignUp" asp-route-role="@UserRole.Candidate" asp-route-returnUrl="@Model.ReturnUrl">Join as a game developer</a>
+            or <a asp-page="./SignUp" asp-route-role="@UserRole.Studio" asp-route-returnUrl="@Model.ReturnUrl">as a studio</a>.
         </p>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

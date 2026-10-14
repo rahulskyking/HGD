@@ -1,7 +1,7 @@
 # HireGameDev — Documentation
 
 All project documentation lives in Notion and is the single source of truth
-(see ADR-010). This file only tells you where to look.
+(see ADR-010). This file tells you where to look and how to run the app locally.
 
 **Root page:** HireGameDev  
 https://www.notion.so/3f98b4492f4d8066b1c4cf4da6a91977
@@ -24,3 +24,54 @@ https://www.notion.so/3f98b4492f4d8066b1c4cf4da6a91977
   ```bash
   dotnet ef migrations add <Name> --project src/HireGameDev.Infrastructure --startup-project src/HireGameDev.Web
   ```
+
+## Local setup
+
+Sign-in is Google / GitHub only (ADR-013), so you need OAuth credentials even locally.
+Secrets go into `dotnet user-secrets` (the Web project already has a `UserSecretsId`); never into `appsettings*.json`.
+
+### 1. PostgreSQL
+
+Create an empty database (e.g. `hiregamedev`) and store the connection string:
+
+```bash
+cd src/HireGameDev.Web
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=hiregamedev;Username=postgres;Password=YOUR_PASSWORD"
+```
+
+### 2. Google OAuth app (required)
+
+1. https://console.cloud.google.com → create/select a project.
+2. **APIs & Services → OAuth consent screen**: User type *External*, fill in app name + emails. While the app is in *Testing*, add your own Google account under **Test users**.
+3. **APIs & Services → Credentials → Create credentials → OAuth client ID**: Application type *Web application*.
+   - Authorized JavaScript origins: `https://localhost:7059`
+   - Authorized redirect URIs: `https://localhost:7059/signin-google`
+4. Copy the Client ID and Client secret:
+
+```bash
+dotnet user-secrets set "Authentication:Google:ClientId" "xxxxxxxx.apps.googleusercontent.com"
+dotnet user-secrets set "Authentication:Google:ClientSecret" "GOCSPX-..."
+```
+
+### 3. GitHub OAuth app (optional — the button only appears when configured)
+
+1. https://github.com/settings/developers → **OAuth Apps → New OAuth App**.
+   - Homepage URL: `https://localhost:7059`
+   - Authorization callback URL: `https://localhost:7059/signin-github`
+2. Register, then **Generate a new client secret**:
+
+```bash
+dotnet user-secrets set "Authentication:GitHub:ClientId" "Iv1...."
+dotnet user-secrets set "Authentication:GitHub:ClientSecret" "..."
+```
+
+### 4. Run
+
+```bash
+dotnet dev-certs https --trust            # once per machine
+dotnet ef database update --project src/HireGameDev.Infrastructure --startup-project src/HireGameDev.Web
+dotnet run --project src/HireGameDev.Web --launch-profile https
+```
+
+Open https://localhost:7059 → *I'm a game developer* / *I'm a studio* → Continue with Google.
+Use the `https` profile: the OAuth callback URLs above are registered for port 7059.

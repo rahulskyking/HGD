@@ -4,14 +4,29 @@ namespace HireGameDev.Application.Identity;
 
 /// <summary>
 /// Account and sign-in operations. Implemented in Infrastructure on top of ASP.NET Core Identity;
-/// no Identity types cross this boundary. Email confirmation tokens are opaque, URL-safe strings.
+/// no Identity types cross this boundary. Accounts are only ever created from an identity that an
+/// external provider (Google, GitHub) has verified, so there are no passwords and no email tokens.
 /// </summary>
 public interface IIdentityService
 {
-    Task<CreateUserResult> CreateUserAsync(
+    /// <summary>
+    /// Returns the external login that the OAuth callback left pending for the current
+    /// request, or <c>null</c> when there is none (or it expired).
+    /// </summary>
+    Task<ExternalLoginDetails?> GetExternalLoginInfoAsync(
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Signs in the account linked to this external login. Fails when no account is linked;
+    /// lockout and confirmed-email rules are applied by Identity.
+    /// </summary>
+    Task<SignInOutcome> ExternalLoginSignInAsync(
+        string provider,
+        string providerKey,
+        CancellationToken cancellationToken = default);
+
+    Task<UserAccount?> FindUserByEmailAsync(
         string email,
-        string password,
-        UserRole role,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -24,49 +39,9 @@ public interface IIdentityService
         ExternalLoginDetails externalLogin,
         CancellationToken cancellationToken = default);
 
-    Task<UserAccount?> FindUserByEmailAsync(
-        string email,
-        CancellationToken cancellationToken = default);
-
-    Task<string> GenerateEmailConfirmationTokenAsync(
-        Guid userId,
-        CancellationToken cancellationToken = default);
-
-    Task<IdentityOperationResult> ConfirmEmailAsync(
-        Guid userId,
-        string token,
-        CancellationToken cancellationToken = default);
-
-    Task<SignInOutcome> PasswordSignInAsync(
-        string email,
-        string password,
-        bool rememberMe,
-        CancellationToken cancellationToken = default);
-
-    Task<SignInOutcome> ExternalLoginSignInAsync(
-        string provider,
-        string providerKey,
-        CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Returns the external login that the OAuth callback left pending for the current
-    /// request, or <c>null</c> when there is none (or it expired).
-    /// </summary>
-    Task<ExternalLoginDetails?> GetExternalLoginInfoAsync(
-        CancellationToken cancellationToken = default);
-
     Task<IdentityOperationResult> AddExternalLoginAsync(
         Guid userId,
         ExternalLoginDetails externalLogin,
-        CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Signs in an existing user without checking credentials. Used after an external
-    /// provider has already authenticated the user.
-    /// </summary>
-    Task SignInAsync(
-        Guid userId,
-        bool rememberMe,
         CancellationToken cancellationToken = default);
 
     Task SignOutAsync(

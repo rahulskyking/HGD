@@ -1,14 +1,17 @@
 using HireGameDev.Application.Identity;
+using HireGameDev.Domain.Enums;
 
 namespace HireGameDev.Application.Features.Authentication.Commands.SignInWithExternalLogin;
 
 /// <summary>
-/// Completes an external (OAuth) sign-in after the provider redirected back:
-/// signs in a linked account, links the login to an existing confirmed account with the
-/// same email, or asks for registration when the email is unknown.
+/// The whole sign-in / sign-up path for external providers, in order:
+/// sign in a linked account; otherwise link the login to an existing confirmed account with
+/// the same email; otherwise create an account with the chosen role (or ask for one).
 /// </summary>
 public sealed class SignInWithExternalLoginHandler
 {
+    private const string GenericError = "Sign-in could not be completed. Please try again.";
+
     private readonly IIdentityService _identityService;
 
     public SignInWithExternalLoginHandler(IIdentityService identityService)
@@ -17,6 +20,7 @@ public sealed class SignInWithExternalLoginHandler
     }
 
     public async Task<ExternalSignInResult> HandleAsync(
+        SignInWithExternalLoginCommand command,
         CancellationToken cancellationToken = default)
     {
         var externalLogin = await _identityService.GetExternalLoginInfoAsync(cancellationToken);
@@ -24,65 +28,107 @@ public sealed class SignInWithExternalLoginHandler
         if (externalLogin is null)
         {
             return ExternalSignInResult.Failed(
-                "Sign-in with the external provider could not be completed. Please try again.");
+                "Your sign-in session has expired. Please try again.");
         }
 
-        var outcome = await _identityService.ExternalLoginSignInAsync(
-            externalLogin.Provider,
-            externalLogin.ProviderKey,
-            cancellationToken);
+        // 1. An account is already linked to this login.
+        var outcome = await SignInAsync(externalLogin, cancellationToken);
 
-        switch (outcome)
+        if (outcome != SignInOutcome.Failed)
         {
-            case SignInOutcome.Succeeded:
-                return ExternalSignInResult.SignedIn();
-
-            case SignInOutcome.LockedOut:
-                return ExternalSignInResult.LockedOut();
-
-            case SignInOutcome.EmailNotConfirmed:
-                return ExternalSignInResult.Failed(
-                    "Please confirm your email address before signing in.");
+            return ToResult(outcome);
         }
 
-        // No account is linked to this external identity yet.
+        // 2. Nothing linked: find the account by email, or create one.
         if (string.IsNullOrWhiteSpace(externalLogin.Email))
         {
             return ExternalSignInResult.Failed(
                 $"{externalLogin.ProviderDisplayName} did not share an email address with us. " +
-                "Please register with your email and a password instead.");
+                "Please try another sign-in option.");
         }
 
-        var existing = await _identityService.FindUserByEmailAsync(
-            externalLogin.Email,
-            cancellationToken);
+        var existing = await _identityService.FindUserByEmailAsync(externalLogin.Email, cancellationToken);
 
-        if (existing is null)
+        var prepared = existing is null
+            ? await CreateAccountAsync(externalLogin, command.RoleForNewAccount, cancellationToken)
+            : await LinkToExistingAccountAsync(externalLogin, existing, cancellationToken);
+
+        if (prepared is not null)
+        {
+            return prepared;
+        }
+
+        // 3. The login is linked now; sign in through Identity so lockout rules apply.
+        outcome = await SignInAsync(externalLogin, cancellationToken);
+
+        return outcome == SignInOutcome.Failed
+            ? ExternalSignInResult.Failed(GenericError)
+            : ToResult(outcome);
+    }
+
+    /// <summary>Returns <c>null</c> when the account was created and is ready to sign in.</summary>
+    private async Task<ExternalSignInResult?> CreateAccountAsync(
+        ExternalLoginDetails externalLogin,
+        UserRole? role,
+        CancellationToken cancellationToken)
+    {
+        if (role is null)
         {
             return ExternalSignInResult.RegistrationRequired(externalLogin);
         }
 
-        // Linking is only safe when the account owner has already proven ownership of the
-        // email; otherwise an unconfirmed account created by someone else could be taken over.
-        if (!existing.EmailConfirmed)
+        if (!role.Value.CanSelfRegister())
         {
             return ExternalSignInResult.Failed(
-                "An account with this email address already exists but has not been confirmed yet. " +
-                "Please confirm your email address first, then sign in again.");
+                "Please choose whether you are a game developer or a studio.");
         }
 
-        var linked = await _identityService.AddExternalLoginAsync(
-            existing.Id,
+        var created = await _identityService.CreateExternalUserAsync(
+            externalLogin.Email!,
+            role.Value,
             externalLogin,
             cancellationToken);
 
-        if (!linked.Succeeded)
+        return created.Succeeded
+            ? null
+            : ExternalSignInResult.Failed(string.Join(" ", created.Errors));
+    }
+
+    /// <summary>Returns <c>null</c> when the login was linked and the account is ready to sign in.</summary>
+    private async Task<ExternalSignInResult?> LinkToExistingAccountAsync(
+        ExternalLoginDetails externalLogin,
+        UserAccount existing,
+        CancellationToken cancellationToken)
+    {
+        // Linking is only safe when the account owner has proven ownership of the email;
+        // otherwise an unconfirmed account created by someone else could be taken over.
+        if (!existing.EmailConfirmed)
         {
-            return ExternalSignInResult.Failed(string.Join(" ", linked.Errors));
+            return ExternalSignInResult.Failed(
+                "An account with this email address exists but was never verified. Please contact support.");
         }
 
-        await _identityService.SignInAsync(existing.Id, rememberMe: false, cancellationToken);
+        var linked = await _identityService.AddExternalLoginAsync(existing.Id, externalLogin, cancellationToken);
 
-        return ExternalSignInResult.SignedIn();
+        return linked.Succeeded
+            ? null
+            : ExternalSignInResult.Failed(string.Join(" ", linked.Errors));
     }
+
+    private Task<SignInOutcome> SignInAsync(ExternalLoginDetails externalLogin, CancellationToken cancellationToken) =>
+        _identityService.ExternalLoginSignInAsync(
+            externalLogin.Provider,
+            externalLogin.ProviderKey,
+            cancellationToken);
+
+    private static ExternalSignInResult ToResult(SignInOutcome outcome) =>
+        outcome switch
+        {
+            SignInOutcome.Succeeded => ExternalSignInResult.SignedIn(),
+            SignInOutcome.LockedOut => ExternalSignInResult.Failed(
+                "This account is temporarily locked. Please try again later."),
+            SignInOutcome.EmailNotConfirmed => ExternalSignInResult.Failed(
+                "This account's email address was never verified. Please contact support."),
+            _ => ExternalSignInResult.Failed(GenericError)
+        };
 }

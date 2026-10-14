@@ -1,21 +1,25 @@
 @using Microsoft.AspNetCore.Authentication
 @inject IAuthenticationSchemeProvider SchemeProvider
-@model string?
+@model ExternalLoginButtons
 @{
-    // External providers are the schemes with a display name (cookies have none).
+    // External providers are the schemes with a display name (cookie schemes have none).
     var providers = (await SchemeProvider.GetAllSchemesAsync())
         .Where(x => !string.IsNullOrEmpty(x.DisplayName))
         .ToList();
 }
 
-@if (providers.Count > 0)
+@if (providers.Count == 0)
 {
-    <div class="text-center text-muted my-3">or</div>
-
-    <form method="post" asp-page="./ExternalLogin" asp-route-returnUrl="@Model">
+    <div class="alert alert-warning" role="alert">
+        No sign-in provider is configured. Add Google or GitHub credentials — see <code>docs/README.md</code>.
+    </div>
+}
+else
+{
+    <form method="post" asp-page="./ExternalLogin" asp-route-role="@Model.Role" asp-route-returnUrl="@Model.ReturnUrl">
         @foreach (var provider in providers)
         {
-            <button type="submit" class="btn btn-outline-dark w-100 mb-2" name="provider" value="@provider.Name">
+            <button type="submit" class="btn btn-outline-dark btn-lg w-100 mb-2" name="provider" value="@provider.Name">
                 Continue with @provider.DisplayName
             </button>
         }

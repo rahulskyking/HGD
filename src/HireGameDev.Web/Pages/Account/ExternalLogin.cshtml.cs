@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using HireGameDev.Application.Features.Authentication.Commands.CompleteExternalRegistration;
 using HireGameDev.Application.Features.Authentication.Commands.SignInWithExternalLogin;
 using HireGameDev.Domain.Enums;
 using Microsoft.AspNetCore.Authentication;
@@ -10,23 +9,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace HireGameDev.Web.Pages.Account;
 
 /// <summary>
-/// External (OAuth) sign-in:
-///   POST  /Account/ExternalLogin                       -> start the provider challenge
-///   GET   /Account/ExternalLogin?handler=Callback      -> provider redirected back
-///   POST  /Account/ExternalLogin?handler=Confirmation  -> new user picked a role
+/// Google / GitHub sign-in:
+///   POST  /Account/ExternalLogin                       -> start the provider challenge (with the role chosen on sign-up, if any)
+///   GET   /Account/ExternalLogin?handler=Callback      -> provider redirected back: sign in, or create the account with that role
+///   POST  /Account/ExternalLogin?handler=Confirmation  -> a new user who arrived without a role picked one
 /// </summary>
 [AllowAnonymous]
 public class ExternalLoginModel : PageModel
 {
     private readonly SignInWithExternalLoginHandler _signInWithExternalLogin;
-    private readonly CompleteExternalRegistrationHandler _completeExternalRegistration;
 
-    public ExternalLoginModel(
-        SignInWithExternalLoginHandler signInWithExternalLogin,
-        CompleteExternalRegistrationHandler completeExternalRegistration)
+    public ExternalLoginModel(SignInWithExternalLoginHandler signInWithExternalLogin)
     {
         _signInWithExternalLogin = signInWithExternalLogin;
-        _completeExternalRegistration = completeExternalRegistration;
     }
 
     [BindProperty]
@@ -46,21 +41,28 @@ public class ExternalLoginModel : PageModel
 
     public class InputModel
     {
-        [Required(ErrorMessage = "Please choose whether you are a candidate or a studio.")]
+        [Required(ErrorMessage = "Please choose whether you are a game developer or a studio.")]
         [Display(Name = "I am a")]
         public UserRole? Role { get; set; }
     }
 
     public IActionResult OnGet() => RedirectToPage("./Login");
 
-    public IActionResult OnPost(string provider, string? returnUrl = null)
+    public IActionResult OnPost(string provider, UserRole? role = null, string? returnUrl = null)
     {
         if (string.IsNullOrWhiteSpace(provider))
         {
             return RedirectToPage("./Login", new { returnUrl });
         }
 
-        var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
+        // Only self-service roles travel through the flow; anything else is asked for after the callback.
+        if (role is { } chosen && !chosen.CanSelfRegister())
+        {
+            role = null;
+        }
+
+        // The callback URL (role included) is carried in the protected OAuth state, so it round-trips intact.
+        var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl, role });
 
         // Equivalent of SignInManager.ConfigureExternalAuthenticationProperties: Identity reads the
         // "LoginProvider" item back from the external cookie when the callback is processed.
@@ -71,6 +73,7 @@ public class ExternalLoginModel : PageModel
     }
 
     public async Task<IActionResult> OnGetCallbackAsync(
+        UserRole? role = null,
         string? returnUrl = null,
         string? remoteError = null,
         CancellationToken cancellationToken = default)
@@ -84,16 +87,14 @@ public class ExternalLoginModel : PageModel
             return RedirectToPage("./Login", new { returnUrl });
         }
 
-        var result = await _signInWithExternalLogin.HandleAsync(cancellationToken);
+        var result = await _signInWithExternalLogin.HandleAsync(
+            new SignInWithExternalLoginCommand(role),
+            cancellationToken);
 
         switch (result.Status)
         {
             case ExternalSignInStatus.SignedIn:
                 return RedirectToReturnUrlOrHome(returnUrl);
-
-            case ExternalSignInStatus.LockedOut:
-                ErrorMessage = "This account is temporarily locked after too many failed attempts. Please try again later.";
-                return RedirectToPage("./Login", new { returnUrl });
 
             case ExternalSignInStatus.RegistrationRequired:
                 ProviderDisplayName = result.ExternalLogin!.ProviderDisplayName;
@@ -101,7 +102,7 @@ public class ExternalLoginModel : PageModel
                 return Page();
 
             default:
-                ErrorMessage = result.Error ?? "Sign-in with the external provider could not be completed.";
+                ErrorMessage = result.Error;
                 return RedirectToPage("./Login", new { returnUrl });
         }
     }
@@ -117,23 +118,21 @@ public class ExternalLoginModel : PageModel
             return Page();
         }
 
-        var result = await _completeExternalRegistration.HandleAsync(
-            new CompleteExternalRegistrationCommand(Input.Role!.Value),
+        var result = await _signInWithExternalLogin.HandleAsync(
+            new SignInWithExternalLoginCommand(Input.Role),
             cancellationToken);
 
-        if (result.Succeeded)
+        if (result.Status == ExternalSignInStatus.SignedIn)
         {
             return RedirectToReturnUrlOrHome(returnUrl);
         }
 
-        foreach (var error in result.Errors)
-        {
-            ModelState.AddModelError(string.Empty, error);
-        }
+        ModelState.AddModelError(string.Empty, result.Error ?? "Sign-in could not be completed. Please try again.");
 
         return Page();
     }
 
+    // "/Index" sends signed-in users on to their role's home page.
     private IActionResult RedirectToReturnUrlOrHome(string? returnUrl) =>
         Url.IsLocalUrl(returnUrl)
             ? LocalRedirect(returnUrl)
