@@ -61,7 +61,7 @@ dotnet user-secrets set "Authentication:Google:ClientSecret" "GOCSPX-..."
 2. Register, then **Generate a new client secret**:
 
 ```bash
-dotnet user-secrets set "Authentication:GitHub:ClientId" "Iv1...."
+dotnet user-secrets set "Authentication:GitHub:ClientId" "Ov23li..."
 dotnet user-secrets set "Authentication:GitHub:ClientSecret" "..."
 ```
 
