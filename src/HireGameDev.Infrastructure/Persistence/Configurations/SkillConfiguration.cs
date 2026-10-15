@@ -13,11 +13,11 @@ public class SkillConfiguration : IEntityTypeConfiguration<Skill>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Name)
-            .HasMaxLength(100)
+            .HasMaxLength(Skill.NameMaxLength)
             .IsRequired();
 
         builder.Property(x => x.Category)
-            .HasMaxLength(100)
+            .HasMaxLength(Skill.CategoryMaxLength)
             .IsRequired();
 
         builder.HasIndex(x => x.Name)

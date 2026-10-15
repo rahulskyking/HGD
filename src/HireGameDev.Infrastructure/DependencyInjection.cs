@@ -1,6 +1,9 @@
 using HireGameDev.Application.Identity;
+using HireGameDev.Application.Persistence;
+using HireGameDev.Application.Storage;
 using HireGameDev.Infrastructure.Identity;
 using HireGameDev.Infrastructure.Persistence;
+using HireGameDev.Infrastructure.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +24,10 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString));
 
+        // Handlers see the context only through the port (ADR-009); same scoped instance.
+        services.AddScoped<IApplicationDbContext>(provider =>
+            provider.GetRequiredService<ApplicationDbContext>());
+
         services
             .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
             {
@@ -33,6 +40,10 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
         services.AddScoped<IIdentityService, IdentityService>();
+
+        services.Configure<FileStorageSettings>(
+            configuration.GetSection(FileStorageSettings.SectionName));
+        services.AddSingleton<IFileStorage, LocalFileStorage>();
 
         return services;
     }

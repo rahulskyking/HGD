@@ -1,0 +1,9 @@
+@model Avatar
+@if (Model.PhotoUrl is not null)
+{
+    <img class="@Model.CssClass" src="@Model.PhotoUrl" alt="@Model.Name" />
+}
+else
+{
+    <span class="@Model.CssClass" role="img" aria-label="@Model.Name">@Model.Initials</span>
+}

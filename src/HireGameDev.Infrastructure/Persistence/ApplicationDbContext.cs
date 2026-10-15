@@ -1,3 +1,4 @@
+using HireGameDev.Application.Persistence;
 using HireGameDev.Domain.Entities;
 using HireGameDev.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +9,7 @@ using DomainApplication = HireGameDev.Domain.Entities.Application;
 namespace HireGameDev.Infrastructure.Persistence;
 
 public class ApplicationDbContext
-    : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
 {
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options)
@@ -25,6 +26,8 @@ public class ApplicationDbContext
     public DbSet<CandidateSkill> CandidateSkills => Set<CandidateSkill>();
 
     public DbSet<ShippedTitle> ShippedTitles => Set<ShippedTitle>();
+
+    public DbSet<PortfolioLink> PortfolioLinks => Set<PortfolioLink>();
 
     public DbSet<Job> Jobs => Set<Job>();
 

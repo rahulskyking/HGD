@@ -1,7 +1,11 @@
 using HireGameDev.Application;
 using HireGameDev.Infrastructure;
 using HireGameDev.Infrastructure.Identity;
+using HireGameDev.Infrastructure.Persistence;
+using HireGameDev.Infrastructure.Storage;
 using HireGameDev.Web;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +19,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     await IdentitySeeder.SeedRolesAsync(scope.ServiceProvider);
+    await SkillSeeder.SeedAsync(scope.ServiceProvider);
 }
 
 if (!app.Environment.IsDevelopment())
@@ -25,6 +30,17 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// Uploads live outside wwwroot (App_Data/media by default) and are served read-only under /media.
+var fileStorage = app.Services.GetRequiredService<IOptions<FileStorageSettings>>().Value;
+var uploadsRoot = fileStorage.ResolveRootPath(app.Environment.ContentRootPath);
+Directory.CreateDirectory(uploadsRoot);
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsRoot),
+    RequestPath = fileStorage.RequestPath,
+    ServeUnknownFileTypes = false,
+});
 
 app.UseRouting();
 

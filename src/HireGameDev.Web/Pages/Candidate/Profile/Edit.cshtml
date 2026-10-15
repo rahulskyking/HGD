@@ -1,0 +1,304 @@
+@page
+@using HireGameDev.Domain.Entities
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@model EditModel
+@{
+    ViewData["Title"] = Model.IsNew ? "Create your profile" : "Edit your profile";
+
+    // Blank rows for the repeaters' template elements; js/forms.js swaps __index__ for the real index.
+    var shippedTitleTemplate = new ViewDataDictionary<ShippedTitleInput>(ViewData, new ShippedTitleInput())
+    {
+        TemplateInfo = { HtmlFieldPrefix = "Input.ShippedTitles[__index__]" },
+    };
+    var portfolioLinkTemplate = new ViewDataDictionary<PortfolioLinkInput>(ViewData, new PortfolioLinkInput())
+    {
+        TemplateInfo = { HtmlFieldPrefix = "Input.PortfolioLinks[__index__]" },
+    };
+
+    var avatar = new Avatar(
+        string.IsNullOrWhiteSpace(Model.Input.FullName) ? "?" : Model.Input.FullName,
+        Model.PhotoUrl,
+        Avatar.Size.Large);
+    var skillPicker = new SkillPicker(
+        "Input.SkillIds",
+        Model.Skills,
+        Model.Input.SkillIds,
+        CandidateProfile.MinimumSkillCount,
+        CandidateProfile.MaximumSkillCount);
+}
+
+<div class="container">
+    <div class="hgd-page-header">
+        <div>
+            <span class="hgd-eyebrow">Candidate profile</span>
+            <h1>@ViewData["Title"]</h1>
+        </div>
+        @if (!Model.IsNew)
+        {
+            <a class="btn btn-outline-secondary" asp-page="./Index">Back to profile</a>
+        }
+    </div>
+
+    @if (Model.StatusMessage is not null)
+    {
+        <div class="alert alert-success d-flex align-items-center gap-2" role="status">
+            <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-check-circle" /></svg>
+            <span>@Model.StatusMessage</span>
+        </div>
+    }
+    @if (Model.ErrorMessage is not null)
+    {
+        <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+            <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-alert-triangle" /></svg>
+            <span>@Model.ErrorMessage</span>
+        </div>
+    }
+
+    <div class="row g-4">
+        <div class="col-lg-8 d-flex flex-column gap-4">
+
+            @* ---- Photo (own forms; needs a saved profile) ---------------------------- *@
+            <section class="card" id="photo">
+                <div class="card-body d-flex flex-column flex-sm-row gap-3 align-items-sm-center">
+                    <partial name="_AvatarPartial" model="avatar" />
+                    <div class="flex-grow-1">
+                        <h2 class="h5 card-title mb-1">Photo</h2>
+                        @if (Model.IsNew)
+                        {
+                            <p class="text-secondary mb-0">Save your profile first, then add a photo here.</p>
+                        }
+                        else
+                        {
+                            <p class="text-secondary small mb-2">JPEG, PNG or WebP up to 2 MB. A clear head-and-shoulders shot works best.</p>
+                            <div class="d-flex flex-wrap gap-2 align-items-center">
+                                <form method="post" enctype="multipart/form-data" asp-page-handler="UploadPhoto" class="d-flex flex-wrap gap-2 align-items-center">
+                                    <input type="file" class="form-control form-control-sm w-auto" asp-for="Photo" accept="image/jpeg,image/png,image/webp" required />
+                                    <button type="submit" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-2">
+                                        <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-camera" /></svg> Upload
+                                    </button>
+                                </form>
+                                @if (Model.PhotoUrl is not null)
+                                {
+                                    <form method="post" asp-page-handler="RemovePhoto">
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2">
+                                            <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-trash-2" /></svg> Remove
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </section>
+
+            <form method="post" id="profile-form" class="d-flex flex-column gap-4" novalidate>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                @* ---- Basics --------------------------------------------------------------- *@
+                <section class="card" id="basics">
+                    <div class="card-body">
+                        <h2 class="h5 card-title mb-3">Basics</h2>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Input.FullName" class="form-label"></label>
+                                <input asp-for="Input.FullName" class="form-control" autocomplete="name" />
+                                <span asp-validation-for="Input.FullName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.JobTitle" class="form-label"></label>
+                                <input asp-for="Input.JobTitle" class="form-control" placeholder="Senior Gameplay Programmer" autocomplete="organization-title" />
+                                <span asp-validation-for="Input.JobTitle" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.City" class="form-label"></label>
+                                <input asp-for="Input.City" class="form-control" list="city-suggestions" placeholder="Bengaluru" autocomplete="address-level2" />
+                                <datalist id="city-suggestions">
+                                    @foreach (var city in IndianCities.Suggestions)
+                                    {
+                                        <option value="@city"></option>
+                                    }
+                                </datalist>
+                                <span asp-validation-for="Input.City" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.Phone" class="form-label"></label>
+                                <input asp-for="Input.Phone" class="form-control" type="tel" placeholder="+91 98765 43210" autocomplete="tel" />
+                                <div class="form-text">Shared with studios only after you apply.</div>
+                                <span asp-validation-for="Input.Phone" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                @* ---- Experience & pay ------------------------------------------------------- *@
+                <section class="card" id="experience">
+                    <div class="card-body">
+                        <h2 class="h5 card-title mb-3">Experience &amp; pay</h2>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Input.SeniorityLevel" class="form-label"></label>
+                                <select asp-for="Input.SeniorityLevel" asp-items="EnumDisplay.SeniorityLevels()" class="form-select">
+                                    <option value="">Choose…</option>
+                                </select>
+                                <span asp-validation-for="Input.SeniorityLevel" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.YearsOfExperience" class="form-label"></label>
+                                <input asp-for="Input.YearsOfExperience" class="form-control" type="number" inputmode="decimal" step="0.5" min="0" max="@CandidateProfile.MaximumYearsOfExperience" />
+                                <span asp-validation-for="Input.YearsOfExperience" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.ExpectedSalaryLpa" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">&#8377;</span>
+                                    <input asp-for="Input.ExpectedSalaryLpa" class="form-control" type="number" inputmode="decimal" step="0.5" min="0.1" max="500" placeholder="12" />
+                                    <span class="input-group-text">LPA</span>
+                                </div>
+                                <div class="form-text">Lakhs per year, before tax. Studios see this; it powers salary matching.</div>
+                                <span asp-validation-for="Input.ExpectedSalaryLpa" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.CurrentSalaryLpa" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">&#8377;</span>
+                                    <input asp-for="Input.CurrentSalaryLpa" class="form-control" type="number" inputmode="decimal" step="0.5" min="0" max="500" placeholder="9" />
+                                    <span class="input-group-text">LPA</span>
+                                </div>
+                                <div class="form-text">Only you can see this.</div>
+                                <span asp-validation-for="Input.CurrentSalaryLpa" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.NoticePeriod" class="form-label"></label>
+                                <select asp-for="Input.NoticePeriod" asp-items="EnumDisplay.NoticePeriods()" class="form-select">
+                                    <option value="">Choose…</option>
+                                </select>
+                                <span asp-validation-for="Input.NoticePeriod" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.OpenToWorkStatus" class="form-label"></label>
+                                <select asp-for="Input.OpenToWorkStatus" asp-items="EnumDisplay.OpenToWorkStatuses()" class="form-select">
+                                    <option value="">Choose…</option>
+                                </select>
+                                <span asp-validation-for="Input.OpenToWorkStatus" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check form-switch">
+                                    <input asp-for="Input.OpenToRemote" class="form-check-input" role="switch" />
+                                    <label asp-for="Input.OpenToRemote" class="form-check-label"></label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="Input.About" class="form-label"></label>
+                                <textarea asp-for="Input.About" class="form-control" rows="4" maxlength="@CandidateProfile.AboutMaxLength"
+                                          placeholder="What you build, what you want to build next, and what you are known for on a team."></textarea>
+                                <div class="form-text d-flex justify-content-between">
+                                    <span>A few sentences in your own words.</span>
+                                    <span><span data-hgd-charcount-for="Input_About">@(Model.Input.About?.Length ?? 0)</span>/@CandidateProfile.AboutMaxLength</span>
+                                </div>
+                                <span asp-validation-for="Input.About" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                @* ---- Skills ----------------------------------------------------------------- *@
+                <section class="card" id="skills">
+                    <div class="card-body">
+                        <h2 class="h5 card-title mb-1">Skills</h2>
+                        <p class="text-secondary small mb-3">
+                            Engines, languages, tools, genres, platforms and the kind of work you do.
+                            Pick at least @CandidateProfile.MinimumSkillCount — matching runs on these.
+                        </p>
+                        <span asp-validation-for="Input.SkillIds" class="text-danger small d-block mb-2"></span>
+                        <partial name="_SkillPickerPartial" model="skillPicker" />
+                    </div>
+                </section>
+
+                @* ---- Shipped titles --------------------------------------------------------- *@
+                <section class="card" id="shipped-titles">
+                    <div class="card-body">
+                        <h2 class="h5 card-title mb-1">Shipped titles</h2>
+                        <p class="text-secondary small mb-3">Games you helped ship, newest first. Up to @CandidateProfile.MaximumShippedTitles.</p>
+                        <span asp-validation-for="Input.ShippedTitles" class="text-danger small d-block mb-2"></span>
+                        <div data-hgd-repeater data-hgd-repeater-prefix="Input.ShippedTitles" data-hgd-repeater-max="@CandidateProfile.MaximumShippedTitles">
+                            <div class="d-flex flex-column gap-3" data-hgd-repeater-rows>
+                                @for (var i = 0; i < Model.Input.ShippedTitles.Count; i++)
+                                {
+                                    <partial name="_ShippedTitleRowPartial" for="Input.ShippedTitles[i]" />
+                                }
+                            </div>
+                            <template data-hgd-repeater-template>
+                                <partial name="_ShippedTitleRowPartial" model="shippedTitleTemplate.Model" view-data="shippedTitleTemplate" />
+                            </template>
+                            <p class="text-secondary small mb-0 mt-2 @(Model.Input.ShippedTitles.Count > 0 ? "d-none" : "")" data-hgd-repeater-empty>
+                                No titles yet — even a game jam entry or a student project counts if it was released.
+                            </p>
+                            <button type="button" class="btn btn-outline-primary btn-sm mt-3 d-inline-flex align-items-center gap-2" data-hgd-repeater-add>
+                                <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-plus" /></svg> Add a title
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                @* ---- Portfolio links -------------------------------------------------------- *@
+                <section class="card" id="portfolio-links">
+                    <div class="card-body">
+                        <h2 class="h5 card-title mb-1">Portfolio links</h2>
+                        <p class="text-secondary small mb-3">ArtStation, GitHub, itch.io, YouTube, Play Store, your site — up to @CandidateProfile.MaximumPortfolioLinks.</p>
+                        <span asp-validation-for="Input.PortfolioLinks" class="text-danger small d-block mb-2"></span>
+                        <div data-hgd-repeater data-hgd-repeater-prefix="Input.PortfolioLinks" data-hgd-repeater-max="@CandidateProfile.MaximumPortfolioLinks">
+                            <div class="d-flex flex-column gap-3" data-hgd-repeater-rows>
+                                @for (var i = 0; i < Model.Input.PortfolioLinks.Count; i++)
+                                {
+                                    <partial name="_PortfolioLinkRowPartial" for="Input.PortfolioLinks[i]" />
+                                }
+                            </div>
+                            <template data-hgd-repeater-template>
+                                <partial name="_PortfolioLinkRowPartial" model="portfolioLinkTemplate.Model" view-data="portfolioLinkTemplate" />
+                            </template>
+                            <p class="text-secondary small mb-0 mt-2 @(Model.Input.PortfolioLinks.Count > 0 ? "d-none" : "")" data-hgd-repeater-empty>
+                                No links yet.
+                            </p>
+                            <button type="button" class="btn btn-outline-primary btn-sm mt-3 d-inline-flex align-items-center gap-2" data-hgd-repeater-add>
+                                <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-plus" /></svg> Add a link
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <button type="submit" class="btn btn-primary btn-lg">@(Model.IsNew ? "Create profile" : "Save changes")</button>
+                    @if (!Model.IsNew)
+                    {
+                        <a class="btn btn-link" asp-page="./Index">Cancel</a>
+                    }
+                </div>
+            </form>
+        </div>
+
+        <aside class="col-lg-4">
+            <div class="card hgd-sticky-aside">
+                <div class="card-body">
+                    <h2 class="h6 text-uppercase text-secondary mb-3">On this page</h2>
+                    <nav class="nav flex-column gap-1 mb-4" aria-label="Form sections">
+                        <a class="nav-link px-0 py-1" href="#basics">Basics</a>
+                        <a class="nav-link px-0 py-1" href="#experience">Experience &amp; pay</a>
+                        <a class="nav-link px-0 py-1" href="#skills">Skills</a>
+                        <a class="nav-link px-0 py-1" href="#shipped-titles">Shipped titles</a>
+                        <a class="nav-link px-0 py-1" href="#portfolio-links">Portfolio links</a>
+                    </nav>
+                    <h2 class="h6 text-uppercase text-secondary mb-2">Tips</h2>
+                    <ul class="small text-secondary ps-3 mb-0 d-flex flex-column gap-2">
+                        <li>Shipped titles are the first thing studios look at. Name the game exactly as released.</li>
+                        <li>Expected salary is in lakhs per year: ₹12,00,000 is <strong>12</strong> LPA.</li>
+                        <li>Pick skills you can be interviewed on, not everything you have touched.</li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,3 +1,4 @@
+@using HireGameDev.Domain.Enums
 <ul class="navbar-nav align-items-md-center gap-md-1 py-2 py-md-0">
 @if (User.Identity?.IsAuthenticated == true)
 {
@@ -6,6 +7,14 @@
         <li class="nav-item">
             <a class="nav-link d-flex align-items-center gap-2" asp-page="@home">
                 <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-grid" /></svg> Dashboard
+            </a>
+        </li>
+    }
+    @if (User.IsInRole(UserRole.Candidate))
+    {
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" asp-page="/Candidate/Profile/Index">
+                <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-user" /></svg> My profile
             </a>
         </li>
     }

@@ -142,3 +142,6 @@ artifacts/
 # ================================
 
 .dotnet/
+
+# User uploads (profile photos) written by LocalFileStorage
+App_Data/

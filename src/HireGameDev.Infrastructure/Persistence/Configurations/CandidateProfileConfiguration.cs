@@ -19,22 +19,25 @@ public class CandidateProfileConfiguration : IEntityTypeConfiguration<CandidateP
             .IsUnique();
 
         builder.Property(x => x.FullName)
-            .HasMaxLength(150)
+            .HasMaxLength(CandidateProfile.FullNameMaxLength)
             .IsRequired();
 
         builder.Property(x => x.PhotoUrl)
-            .HasMaxLength(500);
+            .HasMaxLength(CandidateProfile.PhotoUrlMaxLength);
 
         builder.Property(x => x.Phone)
-            .HasMaxLength(20);
+            .HasMaxLength(CandidateProfile.PhoneMaxLength);
 
         builder.Property(x => x.City)
-            .HasMaxLength(100)
+            .HasMaxLength(CandidateProfile.CityMaxLength)
             .IsRequired();
 
         builder.Property(x => x.JobTitle)
-            .HasMaxLength(150)
+            .HasMaxLength(CandidateProfile.JobTitleMaxLength)
             .IsRequired();
+
+        builder.Property(x => x.About)
+            .HasMaxLength(CandidateProfile.AboutMaxLength);
 
         builder.Property(x => x.YearsOfExperience)
             .HasPrecision(5, 2);
@@ -49,5 +52,15 @@ public class CandidateProfileConfiguration : IEntityTypeConfiguration<CandidateP
             .WithOne()
             .HasForeignKey<CandidateProfile>(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // The collections are read-only on the entity; EF loads into the backing lists.
+        builder.Navigation(x => x.CandidateSkills)
+            .HasField("_candidateSkills");
+
+        builder.Navigation(x => x.ShippedTitles)
+            .HasField("_shippedTitles");
+
+        builder.Navigation(x => x.PortfolioLinks)
+            .HasField("_portfolioLinks");
     }
 }

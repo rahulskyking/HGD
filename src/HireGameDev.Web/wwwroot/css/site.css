@@ -433,6 +433,96 @@ a:not(.btn):focus-visible,
   flex-shrink: 0;
 }
 
+/* Skill chips: a hidden .btn-check + label. Selected = primary tint with a tick. */
+.hgd-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .4em;
+  padding: .4rem .85rem;
+  border: 1px solid var(--hgd-border-strong);
+  border-radius: 999px;
+  background: var(--hgd-surface-elevated);
+  color: var(--hgd-text);
+  font-size: .9rem;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color var(--hgd-transition), background-color var(--hgd-transition), color var(--hgd-transition), box-shadow var(--hgd-transition);
+}
+
+.hgd-chip:hover {
+  border-color: var(--hgd-text-secondary);
+}
+
+.btn-check:focus-visible + .hgd-chip {
+  box-shadow: 0 0 0 .25rem rgba(var(--hgd-primary-rgb), .3);
+}
+
+.btn-check:checked + .hgd-chip {
+  background: rgba(var(--hgd-primary-rgb), .16);
+  border-color: var(--hgd-primary);
+  color: var(--hgd-primary-text);
+}
+
+.btn-check:checked + .hgd-chip::before {
+  content: "";
+  width: .9em;
+  height: .9em;
+  flex-shrink: 0;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='20 6 9 17 4 12'/%3e%3c/svg%3e") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='20 6 9 17 4 12'/%3e%3c/svg%3e") center / contain no-repeat;
+}
+
+/* Read-only chip (profile view, job cards) */
+.hgd-chip-static {
+  cursor: default;
+  background: var(--hgd-surface-muted);
+  border-color: var(--hgd-border);
+}
+
+.hgd-skill-picker fieldset {
+  min-width: 0;
+}
+
+.hgd-skill-picker legend {
+  float: none;
+  width: auto;
+  font-size: .75rem;
+  letter-spacing: .06em;
+}
+
+/* Repeater rows (shipped titles, portfolio links, later: job requirements) */
+.hgd-repeater-row {
+  display: flex;
+  gap: .75rem;
+  align-items: flex-start;
+  padding: 1rem;
+  border: 1px solid var(--hgd-border);
+  border-radius: var(--hgd-radius);
+  background: var(--hgd-surface-elevated);
+}
+
+.hgd-repeater-row > .hgd-icon-btn {
+  margin-top: 1.9rem; /* lines the bin up with the inputs, under the labels */
+}
+
+.hgd-repeater-row > .hgd-icon-btn:hover {
+  --bs-btn-hover-color: var(--bs-danger);
+}
+
+@media (max-width: 575.98px) {
+  .hgd-repeater-row {
+    flex-direction: column;
+  }
+
+  .hgd-repeater-row > .hgd-icon-btn {
+    margin-top: 0;
+    align-self: flex-end;
+  }
+}
+
 /* Cards --------------------------------------------------------------------- */
 
 .card {
@@ -792,6 +882,71 @@ a:not(.btn):focus-visible,
 .hgd-page-header h1 {
   font-size: clamp(1.6rem, 3vw, 2.1rem);
   margin: 0;
+}
+
+/* Profile pieces (avatar, details grid, timeline year, sticky side card) */
+.hgd-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  background: rgba(var(--hgd-primary-rgb), .16);
+  color: var(--hgd-primary-text);
+  font-family: var(--hgd-font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: .02em;
+  flex-shrink: 0;
+  border: 1px solid var(--hgd-border);
+}
+
+.hgd-avatar-sm {
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: .85rem;
+}
+
+.hgd-avatar-lg {
+  width: 6rem;
+  height: 6rem;
+  font-size: 1.9rem;
+}
+
+.hgd-details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 1.25rem;
+  row-gap: .6rem;
+}
+
+.hgd-details dt {
+  color: var(--hgd-text-secondary);
+  font-weight: 500;
+  font-size: .9rem;
+}
+
+.hgd-details dd {
+  margin: 0;
+  font-weight: 500;
+}
+
+.hgd-year {
+  flex-shrink: 0;
+  min-width: 3.5rem;
+  padding-top: .15rem;
+  font-family: var(--hgd-font-display);
+  font-weight: 700;
+  color: var(--hgd-primary-text);
+}
+
+@media (min-width: 992px) {
+  .hgd-sticky-aside {
+    position: sticky;
+    top: 5.5rem;
+  }
 }
 
 /* Auth panel (login / sign-up / role question) */

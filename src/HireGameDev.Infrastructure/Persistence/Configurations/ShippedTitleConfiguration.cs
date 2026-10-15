@@ -13,15 +13,15 @@ public class ShippedTitleConfiguration : IEntityTypeConfiguration<ShippedTitle>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.GameName)
-            .HasMaxLength(200)
+            .HasMaxLength(ShippedTitle.GameNameMaxLength)
             .IsRequired();
 
         builder.Property(x => x.StudioName)
-            .HasMaxLength(200)
+            .HasMaxLength(ShippedTitle.StudioNameMaxLength)
             .IsRequired();
 
         builder.Property(x => x.Role)
-            .HasMaxLength(150)
+            .HasMaxLength(ShippedTitle.RoleMaxLength)
             .IsRequired();
 
         builder.Property(x => x.Year)

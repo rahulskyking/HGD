@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- EF Core so handlers can query through IApplicationDbContext (DbSet<T>, ADR-009). -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.20" />
     <!-- Only the DI abstractions, so AddApplication() can register use-case handlers. -->
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.20" />
   </ItemGroup>

@@ -1,0 +1,171 @@
+@page
+@using HireGameDev.Domain.Enums
+@model IndexModel
+@{
+    ViewData["Title"] = "Your profile";
+    var profile = Model.Profile;
+}
+
+<div class="container">
+    @if (Model.StatusMessage is not null)
+    {
+        <div class="alert alert-success d-flex align-items-center gap-2 mt-3" role="status">
+            <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-check-circle" /></svg>
+            <span>@Model.StatusMessage</span>
+        </div>
+    }
+
+    <div class="hgd-page-header">
+        <div class="d-flex gap-3 align-items-center">
+            <partial name="_AvatarPartial" model="new Avatar(profile.FullName, profile.PhotoUrl, Avatar.Size.Large)" />
+            <div>
+                <span class="hgd-eyebrow">@EnumDisplay.Name(profile.SeniorityLevel)</span>
+                <h1>@profile.FullName</h1>
+                <p class="text-secondary mb-0 d-flex flex-wrap gap-3">
+                    <span>@profile.JobTitle</span>
+                    <span class="d-inline-flex align-items-center gap-1">
+                        <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-map-pin" /></svg>@profile.City
+                    </span>
+                    @if (profile.OpenToRemote)
+                    {
+                        <span class="d-inline-flex align-items-center gap-1">
+                            <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-globe" /></svg>Open to remote
+                        </span>
+                    }
+                </p>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span class="hgd-badge @(profile.OpenToWorkStatus == OpenToWorkStatus.NotLooking ? "hgd-badge-neutral" : "hgd-badge-success")">
+                @EnumDisplay.Name(profile.OpenToWorkStatus)
+            </span>
+            <a class="btn btn-primary d-inline-flex align-items-center gap-2" asp-page="./Edit">
+                <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-edit-2" /></svg> Edit profile
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8 d-flex flex-column gap-4">
+            @if (profile.About is not null)
+            {
+                <section class="card">
+                    <div class="card-body">
+                        <h2 class="h5 card-title">About</h2>
+                        <p class="mb-0" style="white-space: pre-line">@profile.About</p>
+                    </div>
+                </section>
+            }
+
+            <section class="card">
+                <div class="card-body">
+                    <h2 class="h5 card-title d-flex align-items-center gap-2">
+                        <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-award" /></svg> Shipped titles
+                    </h2>
+                    @if (profile.ShippedTitles.Count == 0)
+                    {
+                        <p class="text-secondary mb-0">
+                            Nothing listed yet. Shipped games are the first thing studios look at —
+                            <a asp-page="./Edit" asp-fragment="shipped-titles">add one</a>.
+                        </p>
+                    }
+                    else
+                    {
+                        <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                            @foreach (var title in profile.ShippedTitles)
+                            {
+                                <li class="d-flex gap-3">
+                                    <span class="hgd-year">@title.Year</span>
+                                    <div>
+                                        <strong class="d-block">@title.GameName</strong>
+                                        <span class="text-secondary">@title.Role · @title.StudioName</span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-body">
+                    <h2 class="h5 card-title d-flex align-items-center gap-2">
+                        <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-layers" /></svg> Skills
+                    </h2>
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var group in Model.SkillGroups)
+                        {
+                            <div>
+                                <h3 class="h6 text-uppercase text-secondary mb-2">@group.Key</h3>
+                                <ul class="list-unstyled d-flex flex-wrap gap-2 mb-0">
+                                    @foreach (var skill in group)
+                                    {
+                                        <li class="hgd-chip hgd-chip-static">@skill.Name</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-4 d-flex flex-column gap-4">
+            <section class="card">
+                <div class="card-body">
+                    <h2 class="h6 text-uppercase text-secondary mb-3">Details</h2>
+                    <dl class="hgd-details mb-0">
+                        <dt>Experience</dt>
+                        <dd>@profile.YearsOfExperience.ToString("0.#") years</dd>
+                        <dt>Expected salary</dt>
+                        <dd>@Salary.FormatLpa(profile.ExpectedAnnualSalary)</dd>
+                        @if (profile.CurrentAnnualSalary is { } current)
+                        {
+                            <dt>Current salary</dt>
+                            <dd>@Salary.FormatLpa(current) <span class="text-secondary small">(only you see this)</span></dd>
+                        }
+                        <dt>Notice period</dt>
+                        <dd>@EnumDisplay.Name(profile.NoticePeriod)</dd>
+                        <dt>Remote</dt>
+                        <dd>@(profile.OpenToRemote ? "Open to remote work" : "On-site or hybrid")</dd>
+                        @if (profile.Phone is not null)
+                        {
+                            <dt>Phone</dt>
+                            <dd>@profile.Phone</dd>
+                        }
+                    </dl>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-body">
+                    <h2 class="h6 text-uppercase text-secondary mb-3">Portfolio</h2>
+                    @if (profile.PortfolioLinks.Count == 0)
+                    {
+                        <p class="text-secondary small mb-0">No links yet. <a asp-page="./Edit" asp-fragment="portfolio-links">Add your portfolio</a>.</p>
+                    }
+                    else
+                    {
+                        <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+                            @foreach (var link in profile.PortfolioLinks)
+                            {
+                                <li>
+                                    <a class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-between gap-2 text-start"
+                                       href="@link.Url" target="_blank" rel="noopener noreferrer nofollow">
+                                        <span class="d-inline-flex align-items-center gap-2 text-truncate">
+                                            <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-link" /></svg>
+                                            <span class="text-truncate">@PortfolioHost.Label(link.Url, link.Label)</span>
+                                        </span>
+                                        <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-external-link" /></svg>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </section>
+
+            <p class="small text-secondary mb-0">Last updated @profile.LastChangedAtUtc.ToString("d MMM yyyy") (UTC).</p>
+        </div>
+    </div>
+</div>

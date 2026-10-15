@@ -1,0 +1,37 @@
+@model SkillPicker
+@{
+    var pickerId = "skills-" + Model.FieldName.Replace('.', '-');
+}
+<div class="hgd-skill-picker" id="@pickerId">
+    <div class="d-flex flex-column flex-sm-row gap-2 align-items-sm-center justify-content-between mb-3">
+        <div class="input-group" style="max-width: 22rem">
+            <span class="input-group-text"><svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-search" /></svg></span>
+            <input type="search" class="form-control" placeholder="Find a skill, e.g. Unreal" aria-label="Find a skill"
+                   data-hgd-filter data-hgd-filter-target="#@pickerId" autocomplete="off" />
+        </div>
+        <span class="small text-secondary">
+            <strong data-hgd-checked-count data-hgd-checked-count-for="@Model.FieldName" data-hgd-checked-min="@Model.Minimum">@Model.SelectedIds.Count</strong>
+            selected · pick @Model.Minimum–@Model.Maximum
+        </span>
+    </div>
+
+    @foreach (var group in Model.Groups)
+    {
+        <fieldset class="mb-3" data-hgd-filter-group>
+            <legend class="h6 text-uppercase text-secondary mb-2">@group.Key</legend>
+            <div class="d-flex flex-wrap gap-2">
+                @foreach (var skill in group)
+                {
+                    var id = $"skill-{skill.Id:N}";
+                    <span data-hgd-filter-item>
+                        <input type="checkbox" class="btn-check" id="@id" name="@Model.FieldName" value="@skill.Id"
+                               autocomplete="off" checked="@Model.SelectedIds.Contains(skill.Id)" />
+                        <label class="hgd-chip" for="@id">@skill.Name</label>
+                    </span>
+                }
+            </div>
+        </fieldset>
+    }
+
+    <p class="text-secondary small mb-0 d-none" data-hgd-filter-empty>No skill matches that search.</p>
+</div>

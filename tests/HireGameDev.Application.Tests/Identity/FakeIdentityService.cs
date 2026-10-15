@@ -54,33 +54,33 @@ internal sealed class FakeIdentityService : IIdentityService
     public Task<UserAccount?> FindUserByEmailAsync(string email, CancellationToken cancellationToken = default) =>
         Task.FromResult(AccountsByEmail.GetValueOrDefault(email));
 
-    public Task<IdentityOperationResult> CreateExternalUserAsync(
+    public Task<OperationResult> CreateExternalUserAsync(
         string email, UserRole role, ExternalLoginDetails externalLogin, CancellationToken cancellationToken = default)
     {
         if (CreateUserErrors is not null)
         {
-            return Task.FromResult(IdentityOperationResult.Failure(CreateUserErrors));
+            return Task.FromResult(OperationResult.Failure(CreateUserErrors));
         }
 
         CreatedExternalUsers.Add((email, role, externalLogin));
         AddAccount(email, emailConfirmed: true);
         Link(externalLogin);
 
-        return Task.FromResult(IdentityOperationResult.Success());
+        return Task.FromResult(OperationResult.Success());
     }
 
-    public Task<IdentityOperationResult> AddExternalLoginAsync(
+    public Task<OperationResult> AddExternalLoginAsync(
         Guid userId, ExternalLoginDetails externalLogin, CancellationToken cancellationToken = default)
     {
         if (AddExternalLoginErrors is not null)
         {
-            return Task.FromResult(IdentityOperationResult.Failure(AddExternalLoginErrors));
+            return Task.FromResult(OperationResult.Failure(AddExternalLoginErrors));
         }
 
         AddedExternalLogins.Add((userId, externalLogin));
         Link(externalLogin);
 
-        return Task.FromResult(IdentityOperationResult.Success());
+        return Task.FromResult(OperationResult.Success());
     }
 
     public Task SignOutAsync(CancellationToken cancellationToken = default)

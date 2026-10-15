@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using HireGameDev.Application;
 using HireGameDev.Application.Identity;
 using HireGameDev.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
@@ -85,7 +86,7 @@ public class IdentityService : IIdentityService
             : new UserAccount(user.Id, user.Email!, user.EmailConfirmed);
     }
 
-    public async Task<IdentityOperationResult> CreateExternalUserAsync(
+    public async Task<OperationResult> CreateExternalUserAsync(
         string email,
         UserRole role,
         ExternalLoginDetails externalLogin,
@@ -104,7 +105,7 @@ public class IdentityService : IIdentityService
 
         if (!result.Succeeded)
         {
-            return IdentityOperationResult.Failure(Describe(result));
+            return OperationResult.Failure(Describe(result));
         }
 
         var roleResult = await _userManager.AddToRoleAsync(user, role.ToString());
@@ -113,7 +114,7 @@ public class IdentityService : IIdentityService
         {
             await _userManager.DeleteAsync(user);
 
-            return IdentityOperationResult.Failure(Describe(roleResult));
+            return OperationResult.Failure(Describe(roleResult));
         }
 
         var loginResult = await _userManager.AddLoginAsync(user, ToUserLoginInfo(externalLogin));
@@ -122,13 +123,13 @@ public class IdentityService : IIdentityService
         {
             await _userManager.DeleteAsync(user);
 
-            return IdentityOperationResult.Failure(Describe(loginResult));
+            return OperationResult.Failure(Describe(loginResult));
         }
 
-        return IdentityOperationResult.Success();
+        return OperationResult.Success();
     }
 
-    public async Task<IdentityOperationResult> AddExternalLoginAsync(
+    public async Task<OperationResult> AddExternalLoginAsync(
         Guid userId,
         ExternalLoginDetails externalLogin,
         CancellationToken cancellationToken = default)
@@ -139,8 +140,8 @@ public class IdentityService : IIdentityService
         var result = await _userManager.AddLoginAsync(user, ToUserLoginInfo(externalLogin));
 
         return result.Succeeded
-            ? IdentityOperationResult.Success()
-            : IdentityOperationResult.Failure(Describe(result));
+            ? OperationResult.Success()
+            : OperationResult.Failure(Describe(result));
     }
 
     public Task SignOutAsync(CancellationToken cancellationToken = default) =>
