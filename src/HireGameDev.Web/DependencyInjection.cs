@@ -1,8 +1,15 @@
-namespace HireGameDev.Web.Configuration;
+using HireGameDev.Web.Authorization;
+using HireGameDev.Web.Configuration;
 
-public static class AuthenticationConfiguration
+namespace HireGameDev.Web;
+
+/// <summary>
+/// Everything the Web layer adds on top of Application and Infrastructure:
+/// cookie paths, the external sign-in providers, role policies and Razor Pages conventions.
+/// </summary>
+public static class DependencyInjection
 {
-    public static IServiceCollection AddAuthenticationProviders(
+    public static IServiceCollection AddWeb(
         this IServiceCollection services,
         IConfiguration configuration,
         IHostEnvironment environment)
@@ -14,6 +21,27 @@ public static class AuthenticationConfiguration
             options.AccessDeniedPath = "/Account/AccessDenied";
         });
 
+        services.AddExternalSignInProviders(configuration, environment);
+
+        services.AddAuthorizationBuilder()
+            .AddPolicy(RolePolicies.Candidate, policy => policy.RequireRole(RolePolicies.Candidate))
+            .AddPolicy(RolePolicies.Studio, policy => policy.RequireRole(RolePolicies.Studio));
+
+        services.AddRazorPages(options =>
+        {
+            // Every page in these folders requires the matching role; new pages are protected by default.
+            options.Conventions.AuthorizeFolder("/Candidate", RolePolicies.Candidate);
+            options.Conventions.AuthorizeFolder("/Studio", RolePolicies.Studio);
+        });
+
+        return services;
+    }
+
+    private static void AddExternalSignInProviders(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        IHostEnvironment environment)
+    {
         var authentication = services.AddAuthentication();
 
         // Google sign-in is part of the MVP: required outside Development, optional locally
@@ -47,7 +75,5 @@ public static class AuthenticationConfiguration
                 options.Scope.Add("user:email");
             });
         }
-
-        return services;
     }
 }

@@ -33,7 +33,7 @@ public interface IIdentityService
     /// Creates a user whose email was verified by an external provider:
     /// no password, email already confirmed, external login linked.
     /// </summary>
-    Task<CreateUserResult> CreateExternalUserAsync(
+    Task<IdentityOperationResult> CreateExternalUserAsync(
         string email,
         UserRole role,
         ExternalLoginDetails externalLogin,

@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using HireGameDev.Application.Features.Authentication.Commands.SignInWithExternalLogin;
+using HireGameDev.Application.Features.Authentication.SignInWithExternalLogin;
 using HireGameDev.Domain.Enums;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;

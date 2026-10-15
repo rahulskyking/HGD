@@ -1,6 +1,6 @@
 using HireGameDev.Domain.Enums;
 
-namespace HireGameDev.Application.Features.Authentication.Commands.SignInWithExternalLogin;
+namespace HireGameDev.Application.Features.Authentication.SignInWithExternalLogin;
 
 /// <summary>
 /// Completes a Google / GitHub sign-in after the provider redirected back.

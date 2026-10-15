@@ -1,9 +1,9 @@
-using HireGameDev.Application.Features.Authentication.Commands.SignInWithExternalLogin;
+using HireGameDev.Application.Features.Authentication.SignInWithExternalLogin;
 using HireGameDev.Application.Identity;
-using HireGameDev.Application.Tests.Features.Authentication.Fakes;
+using HireGameDev.Application.Tests.Identity;
 using HireGameDev.Domain.Enums;
 
-namespace HireGameDev.Application.Tests.Features.Authentication;
+namespace HireGameDev.Application.Tests.Features.Authentication.SignInWithExternalLogin;
 
 public class SignInWithExternalLoginHandlerTests
 {

@@ -1,7 +1,7 @@
 using HireGameDev.Application.Identity;
 using HireGameDev.Domain.Enums;
 
-namespace HireGameDev.Application.Features.Authentication.Commands.SignInWithExternalLogin;
+namespace HireGameDev.Application.Features.Authentication.SignInWithExternalLogin;
 
 /// <summary>
 /// The whole sign-in / sign-up path for external providers, in order:

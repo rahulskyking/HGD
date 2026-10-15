@@ -85,7 +85,7 @@ public class IdentityService : IIdentityService
             : new UserAccount(user.Id, user.Email!, user.EmailConfirmed);
     }
 
-    public async Task<CreateUserResult> CreateExternalUserAsync(
+    public async Task<IdentityOperationResult> CreateExternalUserAsync(
         string email,
         UserRole role,
         ExternalLoginDetails externalLogin,
@@ -104,7 +104,7 @@ public class IdentityService : IIdentityService
 
         if (!result.Succeeded)
         {
-            return CreateUserResult.Failure(Describe(result));
+            return IdentityOperationResult.Failure(Describe(result));
         }
 
         var roleResult = await _userManager.AddToRoleAsync(user, role.ToString());
@@ -113,7 +113,7 @@ public class IdentityService : IIdentityService
         {
             await _userManager.DeleteAsync(user);
 
-            return CreateUserResult.Failure(Describe(roleResult));
+            return IdentityOperationResult.Failure(Describe(roleResult));
         }
 
         var loginResult = await _userManager.AddLoginAsync(user, ToUserLoginInfo(externalLogin));
@@ -122,10 +122,10 @@ public class IdentityService : IIdentityService
         {
             await _userManager.DeleteAsync(user);
 
-            return CreateUserResult.Failure(Describe(loginResult));
+            return IdentityOperationResult.Failure(Describe(loginResult));
         }
 
-        return CreateUserResult.Success(user.Id);
+        return IdentityOperationResult.Success();
     }
 
     public async Task<IdentityOperationResult> AddExternalLoginAsync(

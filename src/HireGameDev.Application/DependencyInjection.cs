@@ -1,4 +1,4 @@
-using HireGameDev.Application.Features.Authentication.Commands.SignInWithExternalLogin;
+using HireGameDev.Application.Features.Authentication.SignInWithExternalLogin;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HireGameDev.Application;

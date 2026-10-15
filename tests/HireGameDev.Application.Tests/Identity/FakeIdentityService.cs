@@ -1,7 +1,7 @@
 using HireGameDev.Application.Identity;
 using HireGameDev.Domain.Enums;
 
-namespace HireGameDev.Application.Tests.Features.Authentication.Fakes;
+namespace HireGameDev.Application.Tests.Identity;
 
 /// <summary>
 /// In-memory stand-in for the Identity adapter. Behaves like Identity where it matters:
@@ -54,19 +54,19 @@ internal sealed class FakeIdentityService : IIdentityService
     public Task<UserAccount?> FindUserByEmailAsync(string email, CancellationToken cancellationToken = default) =>
         Task.FromResult(AccountsByEmail.GetValueOrDefault(email));
 
-    public Task<CreateUserResult> CreateExternalUserAsync(
+    public Task<IdentityOperationResult> CreateExternalUserAsync(
         string email, UserRole role, ExternalLoginDetails externalLogin, CancellationToken cancellationToken = default)
     {
         if (CreateUserErrors is not null)
         {
-            return Task.FromResult(CreateUserResult.Failure(CreateUserErrors));
+            return Task.FromResult(IdentityOperationResult.Failure(CreateUserErrors));
         }
 
         CreatedExternalUsers.Add((email, role, externalLogin));
-        var account = AddAccount(email, emailConfirmed: true);
+        AddAccount(email, emailConfirmed: true);
         Link(externalLogin);
 
-        return Task.FromResult(CreateUserResult.Success(account.Id));
+        return Task.FromResult(IdentityOperationResult.Success());
     }
 
     public Task<IdentityOperationResult> AddExternalLoginAsync(
