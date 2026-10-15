@@ -6,6 +6,14 @@
     var providers = (await SchemeProvider.GetAllSchemesAsync())
         .Where(x => !string.IsNullOrEmpty(x.DisplayName))
         .ToList();
+
+    // Brand icon per scheme; a new provider without one simply shows text only.
+    static string? IconFor(string scheme) => scheme switch
+    {
+        "Google" => "hgd-icon-google",
+        "GitHub" => "hgd-icon-github",
+        _ => null,
+    };
 }
 
 @if (providers.Count == 0)
@@ -16,11 +24,15 @@
 }
 else
 {
-    <form method="post" asp-page="./ExternalLogin" asp-route-role="@Model.Role" asp-route-returnUrl="@Model.ReturnUrl">
+    <form method="post" asp-page="./ExternalLogin" asp-route-role="@Model.Role" asp-route-returnUrl="@Model.ReturnUrl" class="d-grid gap-2">
         @foreach (var provider in providers)
         {
-            <button type="submit" class="btn btn-outline-dark btn-lg w-100 mb-2" name="provider" value="@provider.Name">
-                Continue with @provider.DisplayName
+            <button type="submit" class="btn btn-lg hgd-provider-btn" name="provider" value="@provider.Name">
+                @if (IconFor(provider.Name) is { } icon)
+                {
+                    <svg class="hgd-icon" aria-hidden="true"><use href="#@icon" /></svg>
+                }
+                <span>Continue with @provider.DisplayName</span>
             </button>
         }
     </form>

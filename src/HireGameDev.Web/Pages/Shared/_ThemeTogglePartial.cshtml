@@ -1,0 +1,30 @@
+@*
+    Colour theme switcher: Light / Dark / System. Rendered in the navbar by _Layout.
+    Behaviour lives in wwwroot/js/site.js, which keys off the data-hgd-theme-* attributes;
+    the choice is stored in localStorage ("hgd-theme").
+*@
+<div class="dropdown">
+    <button class="btn hgd-icon-btn dropdown-toggle" type="button" id="hgdThemeMenu"
+            data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="Change colour theme" title="Theme">
+        <svg class="hgd-icon" data-hgd-theme-icon="light" aria-hidden="true"><use href="#hgd-icon-sun" /></svg>
+        <svg class="hgd-icon d-none" data-hgd-theme-icon="dark" aria-hidden="true"><use href="#hgd-icon-moon" /></svg>
+        <svg class="hgd-icon d-none" data-hgd-theme-icon="system" aria-hidden="true"><use href="#hgd-icon-monitor" /></svg>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="hgdThemeMenu" role="menu">
+        <li>
+            <button type="button" class="dropdown-item d-flex align-items-center gap-2" role="menuitemradio" aria-checked="false" data-hgd-theme-value="light">
+                <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-sun" /></svg> Light
+            </button>
+        </li>
+        <li>
+            <button type="button" class="dropdown-item d-flex align-items-center gap-2" role="menuitemradio" aria-checked="false" data-hgd-theme-value="dark">
+                <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-moon" /></svg> Dark
+            </button>
+        </li>
+        <li>
+            <button type="button" class="dropdown-item d-flex align-items-center gap-2" role="menuitemradio" aria-checked="false" data-hgd-theme-value="system">
+                <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-monitor" /></svg> System
+            </button>
+        </li>
+    </ul>
+</div>

@@ -10,40 +10,61 @@
 
 @if (Model.Role is null)
 {
-    <h1 class="h3 text-center mb-4">@ViewData["Title"]</h1>
-    <partial name="_JoinOptionsPartial" />
+    <div class="container hgd-section">
+        <div class="text-center mb-4">
+            <span class="hgd-eyebrow">Get started</span>
+            <h1 class="hgd-section-title mb-0">@ViewData["Title"]</h1>
+        </div>
+
+        <partial name="_JoinOptionsPartial" />
+
+        <p class="text-center text-secondary mt-4 mb-0">
+            Already have an account? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Sign in</a>
+        </p>
+    </div>
 }
 else
 {
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <h1 class="h3 mb-1">@ViewData["Title"]</h1>
-            <p class="text-muted mb-4">
-                @(isStudio
-                    ? "Post jobs with salary ranges and manage applicants."
-                    : "Build your developer profile and apply to studios.")
-            </p>
+    <div class="container">
+        <div class="hgd-auth">
+            <div class="card hgd-elevated">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <span class="hgd-tile mb-3" aria-hidden="true">
+                            <svg class="hgd-icon"><use href="#@(isStudio ? "hgd-icon-briefcase" : "hgd-icon-user")" /></svg>
+                        </span>
+                        <h1 class="h3 mb-1">@ViewData["Title"]</h1>
+                        <p class="text-secondary mb-0">
+                            @(isStudio
+                                ? "Post jobs with salary ranges and manage applicants."
+                                : "Build your developer profile and apply to studios.")
+                        </p>
+                    </div>
 
-            <partial name="_ExternalLoginButtonsPartial" model="new ExternalLoginButtons(Model.Role, Model.ReturnUrl)" />
+                    <partial name="_ExternalLoginButtonsPartial" model="new ExternalLoginButtons(Model.Role, Model.ReturnUrl)" />
 
-            <p class="form-text mt-3">
-                By continuing you confirm that you are 18 or older and agree to the Terms of Service and
-                <a asp-page="/Privacy">Privacy Policy</a>.
-            </p>
+                    <p class="form-text mt-3">
+                        By continuing you confirm that you are 18 or older and agree to the Terms of Service and
+                        <a asp-page="/Privacy">Privacy Policy</a>.
+                    </p>
 
-            <p class="mt-4 text-center small">
-                @if (isStudio)
-                {
-                    <text>Not a studio? <a asp-page="./SignUp" asp-route-role="@UserRole.Candidate" asp-route-returnUrl="@Model.ReturnUrl">Join as a game developer</a></text>
-                }
-                else
-                {
-                    <text>Hiring? <a asp-page="./SignUp" asp-route-role="@UserRole.Studio" asp-route-returnUrl="@Model.ReturnUrl">Join as a studio</a></text>
-                }
-            </p>
-            <p class="text-center small">
-                Already have an account? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Sign in</a>
-            </p>
+                    <hr class="my-4" />
+
+                    <p class="text-center small text-secondary mb-2">
+                        @if (isStudio)
+                        {
+                            <text>Not a studio? <a asp-page="./SignUp" asp-route-role="@UserRole.Candidate" asp-route-returnUrl="@Model.ReturnUrl">Join as a game developer</a></text>
+                        }
+                        else
+                        {
+                            <text>Hiring? <a asp-page="./SignUp" asp-route-role="@UserRole.Studio" asp-route-returnUrl="@Model.ReturnUrl">Join as a studio</a></text>
+                        }
+                    </p>
+                    <p class="text-center small text-secondary mb-0">
+                        Already have an account? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Sign in</a>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 }

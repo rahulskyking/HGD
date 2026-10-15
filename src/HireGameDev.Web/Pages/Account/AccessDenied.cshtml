@@ -4,10 +4,17 @@
     ViewData["Title"] = "Access denied";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5 text-center">
-        <h1 class="h3 mb-3">@ViewData["Title"]</h1>
-        <p>You don't have permission to view this page.</p>
-        <a class="btn btn-outline-primary" asp-page="/Index">Back to home</a>
+<div class="container">
+    <div class="hgd-auth text-center">
+        <div class="card hgd-elevated">
+            <div class="card-body">
+                <span class="hgd-tile mb-3" aria-hidden="true">
+                    <svg class="hgd-icon"><use href="#hgd-icon-lock" /></svg>
+                </span>
+                <h1 class="h3 mb-2">@ViewData["Title"]</h1>
+                <p class="text-secondary mb-4">You don't have permission to view this page.</p>
+                <a class="btn btn-outline-primary" asp-page="/Index">Back to home</a>
+            </div>
+        </div>
     </div>
 </div>
