@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Access denied";
+}
+
+<div class="container">
+    <div class="hgd-auth text-center">
+        <div class="card hgd-elevated">
+            <div class="card-body">
+                <span class="hgd-tile mb-3" aria-hidden="true">
+                    <svg class="hgd-icon"><use href="#hgd-icon-lock" /></svg>
+                </span>
+                <h1 class="h3 mb-2">@ViewData["Title"]</h1>
+                <p class="text-secondary mb-4">You don't have permission to view this page.</p>
+                <a class="btn btn-outline-primary" asp-controller="Home" asp-action="Index">Back to home</a>
+            </div>
+        </div>
+    </div>
+</div>

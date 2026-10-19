@@ -1,0 +1,39 @@
+@using Microsoft.AspNetCore.Authentication
+@inject IAuthenticationSchemeProvider SchemeProvider
+@model ExternalLoginButtonsViewModel
+@{
+    // External providers are the schemes with a display name (cookie schemes have none).
+    var providers = (await SchemeProvider.GetAllSchemesAsync())
+        .Where(x => !string.IsNullOrEmpty(x.DisplayName))
+        .ToList();
+
+    // Brand icon per scheme; a new provider without one simply shows text only.
+    static string? IconFor(string scheme) => scheme switch
+    {
+        "Google" => "hgd-icon-google",
+        "GitHub" => "hgd-icon-github",
+        _ => null,
+    };
+}
+
+@if (providers.Count == 0)
+{
+    <div class="alert alert-warning" role="alert">
+        No sign-in provider is configured. Add Google or GitHub credentials — see <code>docs/README.md</code>.
+    </div>
+}
+else
+{
+    <form method="post" asp-controller="Account" asp-action="ExternalLogin" asp-route-role="@Model.Role" asp-route-returnUrl="@Model.ReturnUrl" class="d-grid gap-2">
+        @foreach (var provider in providers)
+        {
+            <button type="submit" class="btn btn-lg hgd-provider-btn" name="provider" value="@provider.Name">
+                @if (IconFor(provider.Name) is { } icon)
+                {
+                    <svg class="hgd-icon" aria-hidden="true"><use href="#@icon" /></svg>
+                }
+                <span>Continue with @provider.DisplayName</span>
+            </button>
+        }
+    </form>
+}

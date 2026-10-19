@@ -1,0 +1,137 @@
+@using HireGameDev.Domain.Enums
+@model StudioDashboardViewModel
+@{
+    ViewData["Title"] = "Studio dashboard";
+    var profile = Model.Profile;
+}
+
+<div class="container">
+    <div class="hgd-page-header">
+        <div>
+            <span class="hgd-eyebrow">Studio</span>
+            <h1>Welcome, @(profile?.Name ?? User.Identity?.Name)</h1>
+        </div>
+        <span class="hgd-badge hgd-badge-primary">Studio</span>
+    </div>
+
+    @if (profile is null)
+    {
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <section class="card hgd-elevated">
+                    <div class="card-body d-flex flex-column flex-sm-row gap-3 align-items-sm-center">
+                        <span class="hgd-tile" aria-hidden="true">
+                            <svg class="hgd-icon"><use href="#hgd-icon-briefcase" /></svg>
+                        </span>
+                        <div class="flex-grow-1">
+                            <h2 class="h5 card-title">Start with your studio profile</h2>
+                            <p class="text-secondary mb-0">
+                                Tell game developers what you make, where your team works and what you have shipped.
+                                Your profile is the foundation for posting jobs.
+                            </p>
+                        </div>
+                        <a class="btn btn-primary d-inline-flex align-items-center gap-2" asp-controller="StudioProfile" asp-action="Edit">
+                            Create profile <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-arrow-right" /></svg>
+                        </a>
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-4">
+                <section class="card h-100">
+                    <div class="card-body">
+                        <span class="hgd-eyebrow">Next phase</span>
+                        <h2 class="h5 card-title mt-2">Your first job post</h2>
+                        <p class="text-secondary mb-0">Once your studio profile is in place, we will build job creation and discovery next.</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            <div class="col-lg-8 d-flex flex-column gap-4">
+                <section class="card hgd-elevated">
+                    <div class="card-body">
+                        <div class="d-flex flex-column flex-sm-row gap-3 align-items-sm-center mb-3">
+                            <partial name="_StudioLogoPartial" model="new StudioLogo(profile.Name, profile.LogoUrl)" />
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="d-flex flex-wrap gap-2 align-items-center">
+                                    <h2 class="h4 mb-0 text-truncate">@profile.Name</h2>
+                                    @if (profile.IsVerified)
+                                    {
+                                        <span class="hgd-badge hgd-badge-success d-inline-flex align-items-center gap-1">
+                                            <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-shield" /></svg> Verified
+                                        </span>
+                                    }
+                                </div>
+                                <p class="text-secondary mb-0">@profile.City, @profile.State · @EnumDisplay.Name(profile.Size) · @EnumDisplay.Name(profile.Type)</p>
+                            </div>
+                            <span class="hgd-badge @(profile.CompletenessPercent == 100 ? "hgd-badge-success" : "hgd-badge-warning")">
+                                @profile.CompletenessPercent% complete
+                            </span>
+                        </div>
+
+                        <div class="progress mb-3" role="progressbar" aria-label="Studio profile completeness"
+                             aria-valuenow="@profile.CompletenessPercent" aria-valuemin="0" aria-valuemax="100" style="height: .6rem">
+                            <div class="progress-bar" style="width: @profile.CompletenessPercent%"></div>
+                        </div>
+
+                        @if (Model.MissingItems.Count > 0)
+                        {
+                            <p class="small text-secondary mb-2">A complete studio profile helps candidates decide where to apply. Still to do:</p>
+                            <ul class="list-unstyled d-flex flex-wrap gap-2 mb-3">
+                                @foreach (var item in Model.MissingItems)
+                                {
+                                    <li><a class="hgd-badge hgd-badge-neutral text-decoration-none" asp-controller="StudioProfile" asp-action="Edit" asp-fragment="@item.Fragment">@item.Label</a></li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="small text-secondary mb-3">
+                                <svg class="hgd-icon text-success" aria-hidden="true"><use href="#hgd-icon-check-circle" /></svg>
+                                Your studio profile is complete. Keep it current as your team ships new games.
+                            </p>
+                        }
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <a class="btn btn-primary" asp-controller="StudioProfile" asp-action="Index">View studio profile</a>
+                            <a class="btn btn-outline-secondary d-inline-flex align-items-center gap-2" asp-controller="StudioProfile" asp-action="Edit">
+                                <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-edit-2" /></svg> Edit profile
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-body d-flex flex-column flex-sm-row gap-3 align-items-sm-center">
+                        <span class="hgd-tile" aria-hidden="true">
+                            <svg class="hgd-icon"><use href="#hgd-icon-briefcase" /></svg>
+                        </span>
+                        <div class="flex-grow-1">
+                            <h2 class="h5 card-title mb-1">Job posting comes next</h2>
+                            <p class="text-secondary mb-0">We are building job creation and discovery as the next phase of HireGameDev.</p>
+                        </div>
+                        <button class="btn btn-outline-secondary" type="button" disabled aria-describedby="job-posting-note">Post a job</button>
+                    </div>
+                    <span id="job-posting-note" class="visually-hidden">Job posting is not available yet.</span>
+                </section>
+            </div>
+
+            <aside class="col-lg-4">
+                <section class="card h-100">
+                    <div class="card-body">
+                        <h2 class="h6 text-uppercase text-secondary mb-3">At a glance</h2>
+                        <div class="d-flex flex-column gap-3">
+                            <div><div class="hgd-stat">@profile.Engines.Count</div><small class="text-secondary">engines listed</small></div>
+                            <div><div class="hgd-stat">@profile.Genres.Count</div><small class="text-secondary">genres listed</small></div>
+                            <div><div class="hgd-stat">@profile.Games.Count</div><small class="text-secondary">released games</small></div>
+                        </div>
+                        <p class="small text-secondary mt-4 mb-0">Studio verification is handled by the HireGameDev team.</p>
+                    </div>
+                </section>
+            </aside>
+        </div>
+    }
+</div>

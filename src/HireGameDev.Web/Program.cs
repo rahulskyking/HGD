@@ -24,7 +24,7 @@ using (var scope = app.Services.CreateScope())
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
@@ -47,6 +47,25 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRazorPages();
+// Explicit routes keep the role-based URLs readable while controllers and views own the UI.
+app.MapControllerRoute(
+    name: "candidate-profile",
+    pattern: "Candidate/Profile/{action=Index}",
+    defaults: new { controller = "CandidateProfile" });
+app.MapControllerRoute(
+    name: "studio-profile",
+    pattern: "Studio/Profile/{action=Index}",
+    defaults: new { controller = "StudioProfile" });
+app.MapControllerRoute(
+    name: "privacy",
+    pattern: "Privacy",
+    defaults: new { controller = "Home", action = "Privacy" });
+app.MapControllerRoute(
+    name: "styleguide",
+    pattern: "Styleguide",
+    defaults: new { controller = "Home", action = "Styleguide" });
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

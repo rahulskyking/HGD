@@ -13,11 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HireGameDev.Infrastructure"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HireGameDev.Web", "src\HireGameDev.Web\HireGameDev.Web.csproj", "{218DC528-670F-47DC-AF94-97FA7AAB2E22}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HireGameDev.Domain.Tests", "HireGameDev.Domain.Tests\HireGameDev.Domain.Tests.csproj", "{2102456E-EECE-4498-A71B-C4473D55C7B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HireGameDev.Domain.Tests", "tests\HireGameDev.Domain.Tests\HireGameDev.Domain.Tests.csproj", "{2102456E-EECE-4498-A71B-C4473D55C7B8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HireGameDev.Application.Tests", "tests\HireGameDev.Application.Tests\HireGameDev.Application.Tests.csproj", "{E546F6E7-9233-4A4D-AB04-556A0CE347BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HireGameDev.Application.Tests", "HireGameDev.Application.Tests\HireGameDev.Application.Tests.csproj", "{E546F6E7-9233-4A4D-AB04-556A0CE347BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,7 +108,5 @@ Global
 		{9AB611BC-592F-4D04-B752-A2E0A884B7C6} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{EF476F47-F508-4DB8-911C-38ED832084B1} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{218DC528-670F-47DC-AF94-97FA7AAB2E22} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
-		{2102456E-EECE-4498-A71B-C4473D55C7B8} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
-		{E546F6E7-9233-4A4D-AB04-556A0CE347BC} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal

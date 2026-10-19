@@ -9,7 +9,7 @@ public static class ClaimsPrincipalExtensions
         user.IsInRole(role.ToString());
 
     /// <summary>
-    /// The account id Identity put in the sign-in cookie. Only call on authorized pages;
+    /// The account id Identity put in the sign-in cookie. Only call from authorized actions;
     /// an anonymous principal has no id and this throws rather than returning a guessable default.
     /// </summary>
     public static Guid GetUserId(this ClaimsPrincipal user)
@@ -22,19 +22,19 @@ public static class ClaimsPrincipalExtensions
     }
 
     /// <summary>
-    /// The page a signed-in user calls home, or <c>null</c> for anonymous users
-    /// (and roles that have no home page yet). The single place that maps role → page.
+    /// The route for a signed-in user's home, or <c>null</c> for anonymous users
+    /// (and roles that do not yet have a home). The single place that maps role → route.
     /// </summary>
-    public static string? HomePage(this ClaimsPrincipal user)
+    public static string? HomePath(this ClaimsPrincipal user)
     {
         if (user.IsInRole(UserRole.Candidate))
         {
-            return "/Candidate/Index";
+            return "/Candidate";
         }
 
         if (user.IsInRole(UserRole.Studio))
         {
-            return "/Studio/Index";
+            return "/Studio";
         }
 
         return null;

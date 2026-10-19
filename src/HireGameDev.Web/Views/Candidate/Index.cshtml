@@ -1,0 +1,110 @@
+@model CandidateDashboardViewModel
+@{
+    ViewData["Title"] = "Your dashboard";
+    var profile = Model.Profile;
+}
+
+<div class="container">
+    <div class="hgd-page-header">
+        <div>
+            <span class="hgd-eyebrow">Game developer</span>
+            <h1>Welcome, @(profile?.FullName ?? User.Identity?.Name)</h1>
+        </div>
+        <span class="hgd-badge hgd-badge-primary">Candidate</span>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            @if (profile is null)
+            {
+                <div class="card hgd-elevated">
+                    <div class="card-body d-flex flex-column flex-sm-row gap-3 align-items-sm-center">
+                        <span class="hgd-tile" aria-hidden="true">
+                            <svg class="hgd-icon"><use href="#hgd-icon-user" /></svg>
+                        </span>
+                        <div class="flex-grow-1">
+                            <h2 class="h5 card-title">Create your profile</h2>
+                            <p class="text-secondary mb-0">
+                                Skills, shipped titles, seniority and expected salary — so studios can find you.
+                                Takes about five minutes.
+                            </p>
+                        </div>
+                        <a class="btn btn-primary d-inline-flex align-items-center gap-2" asp-controller="CandidateProfile" asp-action="Edit">
+                            Get started <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-arrow-right" /></svg>
+                        </a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card hgd-elevated">
+                    <div class="card-body">
+                        <div class="d-flex gap-3 align-items-center mb-3">
+                            <partial name="_AvatarPartial" model="new Avatar(profile.FullName, profile.PhotoUrl)" />
+                            <div class="flex-grow-1 min-w-0">
+                                <h2 class="h5 mb-0 text-truncate">@profile.FullName</h2>
+                                <p class="text-secondary mb-0 text-truncate">@profile.JobTitle · @profile.City</p>
+                            </div>
+                            <span class="hgd-badge @(profile.CompletenessPercent == 100 ? "hgd-badge-success" : "hgd-badge-warning")">
+                                @profile.CompletenessPercent% complete
+                            </span>
+                        </div>
+
+                        <div class="progress mb-3" role="progressbar" aria-label="Profile completeness"
+                             aria-valuenow="@profile.CompletenessPercent" aria-valuemin="0" aria-valuemax="100" style="height: .6rem">
+                            <div class="progress-bar" style="width: @profile.CompletenessPercent%"></div>
+                        </div>
+
+                        @if (Model.MissingItems.Count > 0)
+                        {
+                            <p class="small text-secondary mb-2">Studios shortlist complete profiles first. Still to do:</p>
+                            <ul class="list-unstyled d-flex flex-wrap gap-2 mb-3">
+                                @foreach (var item in Model.MissingItems)
+                                {
+                                    <li><a class="hgd-badge hgd-badge-neutral text-decoration-none" asp-controller="CandidateProfile" asp-action="Edit">@item</a></li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="small text-secondary mb-3">
+                                <svg class="hgd-icon text-success" aria-hidden="true"><use href="#hgd-icon-check-circle" /></svg>
+                                Your profile is complete. Keep it current when you ship something new.
+                            </p>
+                        }
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <a class="btn btn-primary" asp-controller="CandidateProfile" asp-action="Index">View profile</a>
+                            <a class="btn btn-outline-secondary d-inline-flex align-items-center gap-2" asp-controller="CandidateProfile" asp-action="Edit">
+                                <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-edit-2" /></svg> Edit
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="h6 text-uppercase text-secondary mb-3">At a glance</h2>
+                    <div class="d-flex flex-column gap-3">
+                        <div>
+                            <div class="hgd-stat">@(profile?.Skills.Count ?? 0)</div>
+                            <small class="text-secondary">skills listed</small>
+                        </div>
+                        <div>
+                            <div class="hgd-stat">@(profile?.ShippedTitles.Count ?? 0)</div>
+                            <small class="text-secondary">shipped titles</small>
+                        </div>
+                        <div>
+                            <div class="hgd-stat">@(profile is null ? "—" : Salary.FormatLpa(profile.ExpectedAnnualSalary))</div>
+                            <small class="text-secondary">expected salary</small>
+                        </div>
+                    </div>
+                    <p class="small text-secondary mt-4 mb-0">Job search and applications arrive in the next steps.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

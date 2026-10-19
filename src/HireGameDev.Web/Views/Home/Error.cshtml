@@ -1,0 +1,27 @@
+@model HireGameDev.Web.ViewModels.ErrorViewModel
+@{
+    ViewData["Title"] = "Something went wrong";
+}
+
+<div class="container">
+    <div class="hgd-auth text-center">
+        <div class="card hgd-elevated">
+            <div class="card-body">
+                <span class="hgd-tile mb-3" aria-hidden="true">
+                    <svg class="hgd-icon"><use href="#hgd-icon-alert-triangle" /></svg>
+                </span>
+                <h1 class="h3 mb-2">@ViewData["Title"]</h1>
+                <p class="text-secondary">An error occurred while processing your request. Please try again.</p>
+
+                @if (Model.ShowRequestId)
+                {
+                    <p class="small text-secondary">
+                        Request ID: <code>@Model.RequestId</code>
+                    </p>
+                }
+
+                <a class="btn btn-outline-primary mt-2" asp-controller="Home" asp-action="Index">Back to home</a>
+            </div>
+        </div>
+    </div>
+</div>

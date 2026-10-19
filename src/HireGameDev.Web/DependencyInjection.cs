@@ -1,11 +1,12 @@
 using HireGameDev.Web.Authorization;
 using HireGameDev.Web.Configuration;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HireGameDev.Web;
 
 /// <summary>
 /// Everything the Web layer adds on top of Application and Infrastructure:
-/// cookie paths, the external sign-in providers, role policies and Razor Pages conventions.
+/// MVC views, cookie paths, external sign-in providers and role policies.
 /// </summary>
 public static class DependencyInjection
 {
@@ -27,12 +28,9 @@ public static class DependencyInjection
             .AddPolicy(RolePolicies.Candidate, policy => policy.RequireRole(RolePolicies.Candidate))
             .AddPolicy(RolePolicies.Studio, policy => policy.RequireRole(RolePolicies.Studio));
 
-        services.AddRazorPages(options =>
-        {
-            // Every page in these folders requires the matching role; new pages are protected by default.
-            options.Conventions.AuthorizeFolder("/Candidate", RolePolicies.Candidate);
-            options.Conventions.AuthorizeFolder("/Studio", RolePolicies.Studio);
-        });
+        // Protect every non-GET action; MVC form tag helpers emit the matching antiforgery token.
+        services.AddControllersWithViews(options =>
+            options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 
         return services;
     }
