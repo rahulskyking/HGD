@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using HireGameDev.Application.Features.CandidateProfiles.GetMyCandidateProfile;
-using HireGameDev.Application.Features.CandidateProfiles.GetSkills;
+using HireGameDev.Application.Features.Skills.GetSkills;
+using HireGameDev.Web.Pages.Shared;
 using HireGameDev.Application.Features.CandidateProfiles.RemoveCandidatePhoto;
 using HireGameDev.Application.Features.CandidateProfiles.SaveCandidateProfile;
 using HireGameDev.Application.Features.CandidateProfiles.UploadCandidatePhoto;

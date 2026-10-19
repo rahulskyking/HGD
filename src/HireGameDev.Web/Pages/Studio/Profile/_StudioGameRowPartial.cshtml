@@ -1,0 +1,26 @@
+@using HireGameDev.Domain.Entities
+@model StudioGameInput
+@* Same repeater contract as candidate shipped titles; forms.js fills the __index__ prefix. *@
+<div class="hgd-repeater-row" data-hgd-repeater-row>
+    <div class="row g-3 flex-grow-1">
+        <div class="col-md-5">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" placeholder="Raji: An Ancient Epic" />
+            <span asp-validation-for="Name" class="text-danger small"></span>
+        </div>
+        <div class="col-md-2">
+            <label asp-for="Year" class="form-label"></label>
+            <input asp-for="Year" class="form-control" type="number" inputmode="numeric"
+                   min="@StudioGame.EarliestYear" max="@StudioGame.LatestYear()" />
+            <span asp-validation-for="Year" class="text-danger small"></span>
+        </div>
+        <div class="col-md-5">
+            <label asp-for="Url" class="form-label"></label>
+            <input asp-for="Url" class="form-control" type="url" placeholder="https://store.steampowered.com/app/…" />
+            <span asp-validation-for="Url" class="text-danger small"></span>
+        </div>
+    </div>
+    <button type="button" class="btn hgd-icon-btn" data-hgd-repeater-remove aria-label="Remove this game" title="Remove">
+        <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-trash-2" /></svg>
+    </button>
+</div>

@@ -32,4 +32,28 @@ public static class ImageSignature
 
         return null;
     }
+
+    /// <summary>
+    /// Reads the leading bytes of an upload to identify its format, then hands back a stream
+    /// rewound to the start so storage receives the whole file. Non-seekable input is buffered.
+    /// </summary>
+    public static async Task<(string? Extension, Stream Content)> DetectAsync(
+        Stream content,
+        CancellationToken cancellationToken = default)
+    {
+        if (!content.CanSeek)
+        {
+            var buffered = new MemoryStream();
+            await content.CopyToAsync(buffered, cancellationToken);
+            content = buffered;
+        }
+
+        content.Position = 0;
+
+        var header = new byte[HeaderLength];
+        var read = await content.ReadAtLeastAsync(header, header.Length, throwOnEndOfStream: false, cancellationToken);
+        content.Position = 0;
+
+        return (DetectExtension(header.AsSpan(0, read)), content);
+    }
 }

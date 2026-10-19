@@ -884,7 +884,40 @@ a:not(.btn):focus-visible,
   margin: 0;
 }
 
-/* Profile pieces (avatar, details grid, timeline year, sticky side card) */
+/* Profile pieces (candidate avatar, studio mark, details grid, timeline year, sticky side card) */
+/* Studio marks are square (logos are not avatars); same theme tokens and initials fallback. */
+.hgd-studio-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: .85rem;
+  object-fit: cover;
+  background: rgba(var(--hgd-primary-rgb), .16);
+  color: var(--hgd-primary-text);
+  font-family: var(--hgd-font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: .02em;
+  flex-shrink: 0;
+  border: 1px solid var(--hgd-border);
+}
+
+.hgd-studio-logo-sm {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: .6rem;
+  font-size: .85rem;
+}
+
+.hgd-studio-logo-lg {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 1rem;
+  font-size: 1.9rem;
+}
+
 .hgd-avatar {
   display: inline-flex;
   align-items: center;

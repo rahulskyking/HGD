@@ -1,4 +1,4 @@
-namespace HireGameDev.Application.Features.CandidateProfiles.GetSkills;
+namespace HireGameDev.Application.Features.Skills.GetSkills;
 
 public sealed record SkillDto(
     Guid Id,

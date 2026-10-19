@@ -30,7 +30,7 @@ public sealed class UploadCandidatePhotoHandler(
             return OperationResult.Failure("Save your profile before adding a photo.");
         }
 
-        var (extension, content) = await InspectAsync(command.Content, cancellationToken);
+        var (extension, content) = await ImageSignature.DetectAsync(command.Content, cancellationToken);
 
         if (extension is null)
         {
@@ -49,29 +49,5 @@ public sealed class UploadCandidatePhotoHandler(
         }
 
         return OperationResult.Success();
-    }
-
-    /// <summary>
-    /// Reads the leading bytes to identify the format, then hands back a stream rewound to the
-    /// start so storage receives the whole file. Non-seekable input is buffered first.
-    /// </summary>
-    private static async Task<(string? Extension, Stream Content)> InspectAsync(
-        Stream content,
-        CancellationToken cancellationToken)
-    {
-        if (!content.CanSeek)
-        {
-            var buffered = new MemoryStream();
-            await content.CopyToAsync(buffered, cancellationToken);
-            content = buffered;
-        }
-
-        content.Position = 0;
-
-        var header = new byte[ImageSignature.HeaderLength];
-        var read = await content.ReadAtLeastAsync(header, header.Length, throwOnEndOfStream: false, cancellationToken);
-        content.Position = 0;
-
-        return (ImageSignature.DetectExtension(header.AsSpan(0, read)), content);
     }
 }

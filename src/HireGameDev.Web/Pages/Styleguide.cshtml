@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Style guide";
     const string SampleName = "Ananya Krishnan";
+    const string SampleStudio = "Nodding Heads Games";
 }
 
 @*
@@ -258,9 +259,9 @@
         </div>
     </section>
 
-    @* ---- Profile pieces (Step 4) ------------------------------------------------ *@
+    @* ---- Profile pieces (Steps 4–5) ---------------------------------------------- *@
     <section class="mb-5">
-        <h2 class="h4 mb-3">Profile pieces</h2>
+        <h2 class="h4 mb-3">Profile pieces · candidate + studio</h2>
         <div class="row g-4">
             <div class="col-lg-6">
                 <div class="card h-100">
@@ -324,6 +325,34 @@
                                 <div class="progress-bar" style="width: 65%"></div>
                             </div>
                             <span class="hgd-badge hgd-badge-warning">65% complete</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4 mt-1">
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="h6 text-uppercase text-secondary mb-3">Studio logo · <code>_StudioLogoPartial</code></h3>
+                        <div class="d-flex align-items-center gap-3">
+                            <partial name="_StudioLogoPartial" model="new StudioLogo(SampleStudio, null, StudioLogo.Size.Small)" />
+                            <partial name="_StudioLogoPartial" model="new StudioLogo(SampleStudio, null, StudioLogo.Size.Large)" />
+                            <span class="small text-secondary">Square mark with a studio-initials fallback. Uploaded logos use the same shape.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="h6 text-uppercase text-secondary mb-3">Studio profile tags · <code>.hgd-chip-static</code></h3>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="hgd-chip hgd-chip-static">Unity</span>
+                            <span class="hgd-chip hgd-chip-static">RPG</span>
+                            <span class="hgd-chip hgd-chip-static">No crunch</span>
+                            <span class="hgd-chip hgd-chip-static">5-day week</span>
+                            <span class="hgd-chip hgd-chip-static">Hires freshers</span>
                         </div>
                     </div>
                 </div>

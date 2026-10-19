@@ -16,6 +16,8 @@
 //   Counters  — [data-hgd-checked-count data-hgd-checked-count-for="Input.SkillIds" data-hgd-checked-min="3"]
 //               shows how many boxes of that name are checked; [data-hgd-charcount-for="elementId"]
 //               mirrors a textarea's length.
+//   City      — <select data-hgd-city-state="#state-label"> whose selected option has data-state;
+//               updates the text of the matching [data-hgd-city-state-output] element.
 (function () {
     "use strict";
 
@@ -168,6 +170,22 @@
         update();
     }
 
+    function initCityState(select) {
+        var output = document.querySelector(select.getAttribute("data-hgd-city-state"));
+        if (!output) {
+            return;
+        }
+
+        function update() {
+            var option = select.options[select.selectedIndex];
+            var state = option && option.getAttribute("data-state");
+            output.textContent = state || "Choose a city";
+        }
+
+        select.addEventListener("change", update);
+        update();
+    }
+
     function initCharCount(output) {
         var field = document.getElementById(output.getAttribute("data-hgd-charcount-for"));
         if (!field) {
@@ -183,5 +201,6 @@
         document.querySelectorAll("[data-hgd-filter]").forEach(initFilter);
         document.querySelectorAll("[data-hgd-checked-count]").forEach(initCheckedCount);
         document.querySelectorAll("[data-hgd-charcount-for]").forEach(initCharCount);
+        document.querySelectorAll("[data-hgd-city-state]").forEach(initCityState);
     });
 })();

@@ -56,7 +56,7 @@ public class SkillSeederTests : IDisposable
         await using var context = _database.CreateContext();
         var reseeded = await context.Skills.SingleAsync(x => x.Name == "Unity");
         Assert.Equal(existing.Id, reseeded.Id);
-        Assert.Equal(SkillCatalog.Engines, reseeded.Category);
+        Assert.Equal(SkillCategory.Engines, reseeded.Category);
     }
 
     private async Task SeedAsync()

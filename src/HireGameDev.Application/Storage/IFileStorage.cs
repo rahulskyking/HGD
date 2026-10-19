@@ -1,7 +1,7 @@
 namespace HireGameDev.Application.Storage;
 
 /// <summary>
-/// Where user uploads (profile photos, later studio logos) are kept. Callers only ever hold
+/// Where user uploads (profile photos, studio logos) are kept. Callers only ever hold
 /// the public URL a save returns; the implementation decides whether that is a local folder
 /// or object storage (ADR-016).
 /// </summary>

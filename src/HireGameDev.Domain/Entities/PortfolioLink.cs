@@ -1,12 +1,15 @@
+using HireGameDev.Domain;
+
 namespace HireGameDev.Domain.Entities;
 
 /// <summary>
 /// A link to work outside the platform: ArtStation, GitHub, Behance, YouTube, itch.io, a personal
-/// site. Only absolute http(s) URLs are accepted so a link can never run script when rendered.
+/// site. Only absolute http(s) URLs are accepted (<see cref="WebUrl"/>) so a link can never run
+/// script when rendered.
 /// </summary>
 public class PortfolioLink : BaseEntity
 {
-    public const int UrlMaxLength = 500;
+    public const int UrlMaxLength = WebUrl.MaxLength;
     public const int LabelMaxLength = 60;
 
     private PortfolioLink()
@@ -21,7 +24,7 @@ public class PortfolioLink : BaseEntity
         }
 
         CandidateProfileId = candidateProfileId;
-        Url = ValidUrl(url);
+        Url = WebUrl.Require(url, nameof(url));
 
         var trimmedLabel = label?.Trim();
 
@@ -42,20 +45,6 @@ public class PortfolioLink : BaseEntity
 
     public CandidateProfile CandidateProfile { get; private set; } = null!;
 
-    public static bool IsValidUrl(string? url) =>
-        url is not null
-        && url.Length <= UrlMaxLength
-        && Uri.TryCreate(url.Trim(), UriKind.Absolute, out var uri)
-        && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
-        && !string.IsNullOrEmpty(uri.Host);
-
-    private static string ValidUrl(string? url)
-    {
-        if (!IsValidUrl(url))
-        {
-            throw new ArgumentException("Enter a full web address starting with http:// or https://.", nameof(url));
-        }
-
-        return url!.Trim();
-    }
+    /// <summary>Compatibility entry point for profile forms; the shared rule lives in <see cref="WebUrl"/>.</summary>
+    public static bool IsValidUrl(string? url) => WebUrl.IsValid(url);
 }

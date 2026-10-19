@@ -1,7 +1,7 @@
 using HireGameDev.Application.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace HireGameDev.Application.Features.CandidateProfiles.GetSkills;
+namespace HireGameDev.Application.Features.Skills.GetSkills;
 
 public sealed class GetSkillsHandler(IApplicationDbContext dbContext)
 {

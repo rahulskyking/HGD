@@ -113,7 +113,7 @@
                                 <label asp-for="Input.City" class="form-label"></label>
                                 <input asp-for="Input.City" class="form-control" list="city-suggestions" placeholder="Bengaluru" autocomplete="address-level2" />
                                 <datalist id="city-suggestions">
-                                    @foreach (var city in IndianCities.Suggestions)
+                                    @foreach (var city in IndianCity.All.Select(x => x.Name))
                                     {
                                         <option value="@city"></option>
                                     }

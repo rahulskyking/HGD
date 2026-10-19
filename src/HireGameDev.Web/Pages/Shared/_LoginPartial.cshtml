@@ -18,6 +18,14 @@
             </a>
         </li>
     }
+    @if (User.IsInRole(UserRole.Studio))
+    {
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" asp-page="/Studio/Profile/Index">
+                <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-briefcase" /></svg> Studio profile
+            </a>
+        </li>
+    }
     <li class="nav-item">
         <span class="nav-link text-secondary text-truncate" style="max-width: 16rem" title="@User.Identity.Name">@User.Identity.Name</span>
     </li>

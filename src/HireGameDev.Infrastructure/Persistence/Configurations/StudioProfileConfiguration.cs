@@ -19,31 +19,37 @@ public class StudioProfileConfiguration : IEntityTypeConfiguration<StudioProfile
             .IsUnique();
 
         builder.Property(x => x.Name)
-            .HasMaxLength(200)
+            .HasMaxLength(StudioProfile.NameMaxLength)
             .IsRequired();
 
         builder.Property(x => x.LogoUrl)
-            .HasMaxLength(500);
+            .HasMaxLength(StudioProfile.LogoUrlMaxLength);
 
         builder.Property(x => x.WebsiteUrl)
-            .HasMaxLength(500);
+            .HasMaxLength(StudioProfile.WebsiteUrlMaxLength);
 
         builder.Property(x => x.City)
-            .HasMaxLength(100)
+            .HasMaxLength(StudioProfile.CityMaxLength)
             .IsRequired();
 
         builder.Property(x => x.State)
-            .HasMaxLength(100)
+            .HasMaxLength(StudioProfile.StateMaxLength)
             .IsRequired();
 
+        // Enums are stored as their numbers (the convention for every enum in the schema).
         builder.Property(x => x.Size)
-            .HasMaxLength(50)
+            .HasConversion<int>()
             .IsRequired();
 
         builder.Property(x => x.Type)
-            .HasMaxLength(100)
+            .HasConversion<int>()
             .IsRequired();
 
+        builder.Property(x => x.About)
+            .HasMaxLength(StudioProfile.AboutMaxLength);
+
+        // Preserve the existing varchar(30) column width. Domain accepts a valid 15-character
+        // GSTIN; retaining extra storage headroom avoids an unnecessary narrowing migration.
         builder.Property(x => x.GstNumber)
             .HasMaxLength(30);
 
@@ -51,5 +57,18 @@ public class StudioProfileConfiguration : IEntityTypeConfiguration<StudioProfile
             .WithOne()
             .HasForeignKey<StudioProfile>(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // The collections are read-only on the entity; EF loads into the backing lists.
+        builder.Navigation(x => x.Engines)
+            .HasField("_engines");
+
+        builder.Navigation(x => x.Genres)
+            .HasField("_genres");
+
+        builder.Navigation(x => x.CultureTags)
+            .HasField("_cultureTags");
+
+        builder.Navigation(x => x.Games)
+            .HasField("_games");
     }
 }

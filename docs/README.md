@@ -77,5 +77,5 @@ Open https://localhost:7059 → *I'm a game developer* / *I'm a studio* → Cont
 Use the `https` profile: the OAuth callback URLs above are registered for port 7059.
 
 On start the app seeds the Identity roles and the skills master list (`SkillCatalog`), and creates
-`src/HireGameDev.Web/App_Data/media/` for uploaded profile photos (git-ignored, served at `/media`;
+`src/HireGameDev.Web/App_Data/media/` for candidate photos and studio logos (git-ignored, served at `/media`;
 change the folder with the `FileStorage` section in `appsettings.json`).

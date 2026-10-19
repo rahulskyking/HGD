@@ -1,6 +1,6 @@
-using HireGameDev.Application.Features.CandidateProfiles.GetSkills;
+using HireGameDev.Application.Features.Skills.GetSkills;
 
-namespace HireGameDev.Web.Pages.Candidate.Profile;
+namespace HireGameDev.Web.Pages.Shared;
 
 /// <summary>Model for <c>_SkillPickerPartial</c>.</summary>
 /// <param name="FieldName">Form field the chosen skill ids post as, e.g. <c>Input.SkillIds</c>.</param>

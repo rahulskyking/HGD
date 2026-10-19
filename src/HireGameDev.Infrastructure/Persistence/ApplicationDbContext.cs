@@ -21,6 +21,14 @@ public class ApplicationDbContext
 
     public DbSet<StudioProfile> StudioProfiles => Set<StudioProfile>();
 
+    public DbSet<StudioEngine> StudioEngines => Set<StudioEngine>();
+
+    public DbSet<StudioGenre> StudioGenres => Set<StudioGenre>();
+
+    public DbSet<StudioCultureTag> StudioCultureTags => Set<StudioCultureTag>();
+
+    public DbSet<StudioGame> StudioGames => Set<StudioGame>();
+
     public DbSet<Skill> Skills => Set<Skill>();
 
     public DbSet<CandidateSkill> CandidateSkills => Set<CandidateSkill>();

@@ -11,7 +11,16 @@
         </div>
         <span class="small text-secondary">
             <strong data-hgd-checked-count data-hgd-checked-count-for="@Model.FieldName" data-hgd-checked-min="@Model.Minimum">@Model.SelectedIds.Count</strong>
-            selected · pick @Model.Minimum–@Model.Maximum
+            <span>
+                @if (Model.Minimum == 0)
+                {
+                    <span>selected · up to @Model.Maximum</span>
+                }
+                else
+                {
+                    <span>selected · pick @Model.Minimum–@Model.Maximum</span>
+                }
+            </span>
         </span>
     </div>
 

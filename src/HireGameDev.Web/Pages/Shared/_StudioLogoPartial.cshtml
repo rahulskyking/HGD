@@ -1,0 +1,9 @@
+@model StudioLogo
+@if (Model.LogoUrl is not null)
+{
+    <img class="@Model.CssClass" src="@Model.LogoUrl" alt="@Model.Name logo" />
+}
+else
+{
+    <span class="@Model.CssClass" role="img" aria-label="@Model.Name">@Model.Initials</span>
+}
