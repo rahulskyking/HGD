@@ -24,9 +24,12 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString));
 
-        // Handlers see the context only through the port (ADR-009); same scoped instance.
-        services.AddScoped<IApplicationDbContext>(provider =>
+        // Application-facing persistence contracts are implemented here; EF stays in Infrastructure.
+        services.AddScoped<IApplicationUnitOfWork>(provider =>
             provider.GetRequiredService<ApplicationDbContext>());
+        services.AddScoped<ICandidateProfileRepository, CandidateProfileRepository>();
+        services.AddScoped<IStudioProfileRepository, StudioProfileRepository>();
+        services.AddScoped<ISkillRepository, SkillRepository>();
 
         services
             .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>

@@ -1,24 +1,15 @@
 using HireGameDev.Application.Features.Skills.GetSkills;
 using HireGameDev.Application.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace HireGameDev.Application.Features.StudioProfiles.GetMyStudioProfile;
 
-public sealed class GetMyStudioProfileHandler(IApplicationDbContext dbContext)
+public sealed class GetMyStudioProfileHandler(IStudioProfileRepository studioProfiles)
 {
     public async Task<StudioProfileDto?> HandleAsync(
         GetMyStudioProfileQuery query,
         CancellationToken cancellationToken = default)
     {
-        var profile = await dbContext.StudioProfiles
-            .AsNoTracking()
-            .AsSplitQuery()
-            .Include(x => x.Engines)
-                .ThenInclude(x => x.Skill)
-            .Include(x => x.Genres)
-            .Include(x => x.CultureTags)
-            .Include(x => x.Games)
-            .SingleOrDefaultAsync(x => x.UserId == query.UserId, cancellationToken);
+        var profile = await studioProfiles.GetForDisplayAsync(query.UserId, cancellationToken);
 
         if (profile is null)
         {

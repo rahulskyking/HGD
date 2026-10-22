@@ -1,10 +1,12 @@
 using HireGameDev.Application.Persistence;
 using HireGameDev.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace HireGameDev.Application.Features.StudioProfiles.SaveStudioProfile;
 
-public sealed class SaveStudioProfileHandler(IApplicationDbContext dbContext)
+public sealed class SaveStudioProfileHandler(
+    IStudioProfileRepository studioProfiles,
+    ISkillRepository skills,
+    IApplicationUnitOfWork unitOfWork)
 {
     public async Task<OperationResult> HandleAsync(
         SaveStudioProfileCommand command,
@@ -17,28 +19,20 @@ public sealed class SaveStudioProfileHandler(IApplicationDbContext dbContext)
             return OperationResult.Failure($"Pick at most {StudioProfile.MaximumEngines} engines.");
         }
 
-        var knownEngines = await dbContext.Skills
-            .Where(x => engineIds.Contains(x.Id) && x.Category == SkillCategory.Engines)
-            .Select(x => x.Id)
-            .ToListAsync(cancellationToken);
+        var knownEngines = await skills.GetByIdsAsync(engineIds, cancellationToken);
 
-        if (knownEngines.Count != engineIds.Count)
+        if (knownEngines.Count != engineIds.Count
+            || knownEngines.Any(skill => skill.Category != SkillCategory.Engines))
         {
             return OperationResult.Failure("One or more selected engines no longer exist. Please choose again.");
         }
 
-        var profile = await dbContext.StudioProfiles
-            .AsSplitQuery()
-            .Include(x => x.Engines)
-            .Include(x => x.Genres)
-            .Include(x => x.CultureTags)
-            .Include(x => x.Games)
-            .SingleOrDefaultAsync(x => x.UserId == command.UserId, cancellationToken);
+        var profile = await studioProfiles.GetForProfileEditAsync(command.UserId, cancellationToken);
 
         if (profile is null)
         {
             profile = new StudioProfile(command.UserId);
-            dbContext.StudioProfiles.Add(profile);
+            studioProfiles.Add(profile);
         }
 
         try
@@ -64,7 +58,7 @@ public sealed class SaveStudioProfileHandler(IApplicationDbContext dbContext)
             return OperationResult.Failure("Some of the details are not valid. Check the form and try again.");
         }
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return OperationResult.Success();
     }

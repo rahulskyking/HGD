@@ -1,11 +1,11 @@
 using HireGameDev.Application.Persistence;
 using HireGameDev.Application.Storage;
-using Microsoft.EntityFrameworkCore;
 
 namespace HireGameDev.Application.Features.StudioProfiles.UploadStudioLogo;
 
 public sealed class UploadStudioLogoHandler(
-    IApplicationDbContext dbContext,
+    IStudioProfileRepository studioProfiles,
+    IApplicationUnitOfWork unitOfWork,
     IFileStorage fileStorage)
 {
     public async Task<OperationResult> HandleAsync(
@@ -22,8 +22,7 @@ public sealed class UploadStudioLogoHandler(
             return OperationResult.Failure("Logos must be 2 MB or smaller.");
         }
 
-        var profile = await dbContext.StudioProfiles
-            .SingleOrDefaultAsync(x => x.UserId == command.UserId, cancellationToken);
+        var profile = await studioProfiles.GetForMediaUpdateAsync(command.UserId, cancellationToken);
 
         if (profile is null)
         {
@@ -41,7 +40,7 @@ public sealed class UploadStudioLogoHandler(
         var url = await fileStorage.SaveAsync(content, UploadStudioLogoCommand.Folder, extension, cancellationToken);
 
         profile.SetLogo(url);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         if (previousUrl is not null)
         {

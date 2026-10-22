@@ -9,7 +9,7 @@ using DomainApplication = HireGameDev.Domain.Entities.Application;
 namespace HireGameDev.Infrastructure.Persistence;
 
 public class ApplicationDbContext
-    : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
+    : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationUnitOfWork
 {
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options)

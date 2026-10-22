@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HireGameDev.Application\HireGameDev.Application.csproj" />
+    <ProjectReference Include="..\HireGameDev.Domain\HireGameDev.Domain.csproj" />
     <ProjectReference Include="..\HireGameDev.Infrastructure\HireGameDev.Infrastructure.csproj" />
   </ItemGroup>
 

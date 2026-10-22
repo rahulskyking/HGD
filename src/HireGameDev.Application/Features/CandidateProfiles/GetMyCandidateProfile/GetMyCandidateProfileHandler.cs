@@ -1,22 +1,14 @@
 using HireGameDev.Application.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace HireGameDev.Application.Features.CandidateProfiles.GetMyCandidateProfile;
 
-public sealed class GetMyCandidateProfileHandler(IApplicationDbContext dbContext)
+public sealed class GetMyCandidateProfileHandler(ICandidateProfileRepository candidateProfiles)
 {
     public async Task<CandidateProfileDto?> HandleAsync(
         GetMyCandidateProfileQuery query,
         CancellationToken cancellationToken = default)
     {
-        var profile = await dbContext.CandidateProfiles
-            .AsNoTracking()
-            .AsSplitQuery()
-            .Include(x => x.CandidateSkills)
-                .ThenInclude(x => x.Skill)
-            .Include(x => x.ShippedTitles)
-            .Include(x => x.PortfolioLinks)
-            .SingleOrDefaultAsync(x => x.UserId == query.UserId, cancellationToken);
+        var profile = await candidateProfiles.GetForDisplayAsync(query.UserId, cancellationToken);
 
         if (profile is null)
         {

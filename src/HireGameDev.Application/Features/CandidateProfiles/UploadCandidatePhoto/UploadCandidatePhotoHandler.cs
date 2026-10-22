@@ -1,11 +1,11 @@
 using HireGameDev.Application.Persistence;
 using HireGameDev.Application.Storage;
-using Microsoft.EntityFrameworkCore;
 
 namespace HireGameDev.Application.Features.CandidateProfiles.UploadCandidatePhoto;
 
 public sealed class UploadCandidatePhotoHandler(
-    IApplicationDbContext dbContext,
+    ICandidateProfileRepository candidateProfiles,
+    IApplicationUnitOfWork unitOfWork,
     IFileStorage fileStorage)
 {
     public async Task<OperationResult> HandleAsync(
@@ -22,8 +22,7 @@ public sealed class UploadCandidatePhotoHandler(
             return OperationResult.Failure("Photos must be 2 MB or smaller.");
         }
 
-        var profile = await dbContext.CandidateProfiles
-            .SingleOrDefaultAsync(x => x.UserId == command.UserId, cancellationToken);
+        var profile = await candidateProfiles.GetForMediaUpdateAsync(command.UserId, cancellationToken);
 
         if (profile is null)
         {
@@ -41,7 +40,7 @@ public sealed class UploadCandidatePhotoHandler(
         var url = await fileStorage.SaveAsync(content, UploadCandidatePhotoCommand.Folder, extension, cancellationToken);
 
         profile.SetPhoto(url);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         if (previousUrl is not null)
         {

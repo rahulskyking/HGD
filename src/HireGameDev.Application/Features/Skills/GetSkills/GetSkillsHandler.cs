@@ -1,19 +1,19 @@
 using HireGameDev.Application.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace HireGameDev.Application.Features.Skills.GetSkills;
 
-public sealed class GetSkillsHandler(IApplicationDbContext dbContext)
+public sealed class GetSkillsHandler(ISkillRepository skills)
 {
     public async Task<IReadOnlyList<SkillDto>> HandleAsync(
         GetSkillsQuery query,
         CancellationToken cancellationToken = default)
     {
-        return await dbContext.Skills
-            .AsNoTracking()
-            .OrderBy(x => x.Category)
-            .ThenBy(x => x.Name)
-            .Select(x => new SkillDto(x.Id, x.Name, x.Category))
-            .ToListAsync(cancellationToken);
+        var catalog = await skills.GetAllAsync(cancellationToken);
+
+        return catalog
+            .OrderBy(skill => skill.Category)
+            .ThenBy(skill => skill.Name)
+            .Select(skill => new SkillDto(skill.Id, skill.Name, skill.Category))
+            .ToList();
     }
 }

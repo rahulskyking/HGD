@@ -25,6 +25,16 @@ https://www.notion.so/3f98b4492f4d8066b1c4cf4da6a91977
   dotnet ef migrations add <Name> --project src/HireGameDev.Infrastructure --startup-project src/HireGameDev.Web
   ```
 
+## Build
+
+From the repository root, build the production solution with:
+
+```bash
+dotnet build HireGameDev.sln
+```
+
+There are currently no test projects in the solution (owner decision).
+
 ## Local setup
 
 Sign-in is Google / GitHub only (ADR-013), so you need OAuth credentials even locally.

@@ -1,19 +1,18 @@
 using HireGameDev.Application.Persistence;
 using HireGameDev.Application.Storage;
-using Microsoft.EntityFrameworkCore;
 
 namespace HireGameDev.Application.Features.StudioProfiles.RemoveStudioLogo;
 
 public sealed class RemoveStudioLogoHandler(
-    IApplicationDbContext dbContext,
+    IStudioProfileRepository studioProfiles,
+    IApplicationUnitOfWork unitOfWork,
     IFileStorage fileStorage)
 {
     public async Task HandleAsync(
         RemoveStudioLogoCommand command,
         CancellationToken cancellationToken = default)
     {
-        var profile = await dbContext.StudioProfiles
-            .SingleOrDefaultAsync(x => x.UserId == command.UserId, cancellationToken);
+        var profile = await studioProfiles.GetForMediaUpdateAsync(command.UserId, cancellationToken);
 
         if (profile?.LogoUrl is null)
         {
@@ -23,7 +22,7 @@ public sealed class RemoveStudioLogoHandler(
         var url = profile.LogoUrl;
 
         profile.RemoveLogo();
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         await fileStorage.DeleteAsync(url, cancellationToken);
     }
 }
