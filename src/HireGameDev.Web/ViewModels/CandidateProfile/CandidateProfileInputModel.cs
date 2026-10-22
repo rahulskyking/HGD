@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using HireGameDev.Application.Features.CandidateProfiles.GetMyCandidateProfile;
 using HireGameDev.Application.Features.CandidateProfiles.SaveCandidateProfile;
-using HireGameDev.Domain.Entities;
+using CandidateProfileEntity = global::HireGameDev.Domain.Entities.CandidateProfile;
 using HireGameDev.Domain.Enums;
 using HireGameDev.Web.Display;
 
@@ -10,21 +10,21 @@ namespace HireGameDev.Web.ViewModels.CandidateProfile;
 public sealed class CandidateProfileInputModel
 {
     [Required]
-    [StringLength(CandidateProfile.FullNameMaxLength)]
+    [StringLength(CandidateProfileEntity.FullNameMaxLength)]
     [Display(Name = "Full name")]
     public string FullName { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(CandidateProfile.JobTitleMaxLength)]
+    [StringLength(CandidateProfileEntity.JobTitleMaxLength)]
     [Display(Name = "Job title")]
     public string JobTitle { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(CandidateProfile.CityMaxLength)]
+    [StringLength(CandidateProfileEntity.CityMaxLength)]
     public string City { get; set; } = string.Empty;
 
     [Phone]
-    [StringLength(CandidateProfile.PhoneMaxLength)]
+    [StringLength(CandidateProfileEntity.PhoneMaxLength)]
     [Display(Name = "Phone (optional)")]
     public string? Phone { get; set; }
 
@@ -33,7 +33,7 @@ public sealed class CandidateProfileInputModel
     public SeniorityLevel? SeniorityLevel { get; set; }
 
     [Required]
-    [Range(0, CandidateProfile.MaximumYearsOfExperience)]
+    [Range(0, CandidateProfileEntity.MaximumYearsOfExperience)]
     [Display(Name = "Years of experience")]
     public decimal? YearsOfExperience { get; set; }
 
@@ -57,19 +57,19 @@ public sealed class CandidateProfileInputModel
     [Display(Name = "Open to remote work")]
     public bool OpenToRemote { get; set; }
 
-    [StringLength(CandidateProfile.AboutMaxLength)]
+    [StringLength(CandidateProfileEntity.AboutMaxLength)]
     [Display(Name = "About (optional)")]
     public string? About { get; set; }
 
-    [MinLength(CandidateProfile.MinimumSkillCount, ErrorMessage = "Pick at least {1} skills.")]
-    [MaxLength(CandidateProfile.MaximumSkillCount, ErrorMessage = "Pick at most {1} skills.")]
+    [MinLength(CandidateProfileEntity.MinimumSkillCount, ErrorMessage = "Pick at least {1} skills.")]
+    [MaxLength(CandidateProfileEntity.MaximumSkillCount, ErrorMessage = "Pick at most {1} skills.")]
     [Display(Name = "Skills")]
     public List<Guid> SkillIds { get; set; } = [];
 
-    [MaxLength(CandidateProfile.MaximumShippedTitles, ErrorMessage = "Add at most {1} shipped titles.")]
+    [MaxLength(CandidateProfileEntity.MaximumShippedTitles, ErrorMessage = "Add at most {1} shipped titles.")]
     public List<ShippedTitleInput> ShippedTitles { get; set; } = [];
 
-    [MaxLength(CandidateProfile.MaximumPortfolioLinks, ErrorMessage = "Add at most {1} portfolio links.")]
+    [MaxLength(CandidateProfileEntity.MaximumPortfolioLinks, ErrorMessage = "Add at most {1} portfolio links.")]
     public List<PortfolioLinkInput> PortfolioLinks { get; set; } = [];
 
     public static CandidateProfileInputModel From(CandidateProfileDto profile) => new()

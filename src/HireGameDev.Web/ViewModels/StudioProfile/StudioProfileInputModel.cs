@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using HireGameDev.Application.Features.StudioProfiles.GetMyStudioProfile;
 using HireGameDev.Application.Features.StudioProfiles.SaveStudioProfile;
 using HireGameDev.Domain;
-using HireGameDev.Domain.Entities;
+using StudioProfileEntity = global::HireGameDev.Domain.Entities.StudioProfile;
 using HireGameDev.Domain.Enums;
 
 namespace HireGameDev.Web.ViewModels.StudioProfile;
@@ -10,16 +10,16 @@ namespace HireGameDev.Web.ViewModels.StudioProfile;
 public sealed class StudioProfileInputModel : IValidatableObject
 {
     [Required]
-    [StringLength(StudioProfile.NameMaxLength)]
+    [StringLength(StudioProfileEntity.NameMaxLength)]
     [Display(Name = "Studio name")]
     public string Name { get; set; } = string.Empty;
 
-    [StringLength(StudioProfile.WebsiteUrlMaxLength)]
+    [StringLength(StudioProfileEntity.WebsiteUrlMaxLength)]
     [Display(Name = "Website (optional)")]
     public string? WebsiteUrl { get; set; }
 
     [Required]
-    [StringLength(StudioProfile.CityMaxLength)]
+    [StringLength(StudioProfileEntity.CityMaxLength)]
     [Display(Name = "City")]
     public string City { get; set; } = string.Empty;
 
@@ -33,27 +33,27 @@ public sealed class StudioProfileInputModel : IValidatableObject
     [Display(Name = "Studio type")]
     public StudioType? Type { get; set; }
 
-    [StringLength(StudioProfile.AboutMaxLength)]
+    [StringLength(StudioProfileEntity.AboutMaxLength)]
     [Display(Name = "About your studio (optional)")]
     public string? About { get; set; }
 
-    [StringLength(StudioProfile.GstNumberLength)]
+    [StringLength(StudioProfileEntity.GstNumberLength)]
     [Display(Name = "GSTIN (optional)")]
     public string? GstNumber { get; set; }
 
-    [MaxLength(StudioProfile.MaximumEngines, ErrorMessage = "Pick at most {1} engines.")]
+    [MaxLength(StudioProfileEntity.MaximumEngines, ErrorMessage = "Pick at most {1} engines.")]
     [Display(Name = "Engines")]
     public List<Guid> EngineIds { get; set; } = [];
 
-    [MaxLength(StudioProfile.MaximumGenres, ErrorMessage = "Pick at most {1} genres.")]
+    [MaxLength(StudioProfileEntity.MaximumGenres, ErrorMessage = "Pick at most {1} genres.")]
     [Display(Name = "Genres")]
     public List<GameGenre> Genres { get; set; } = [];
 
-    [MaxLength(StudioProfile.MaximumCultureTags, ErrorMessage = "Pick at most {1} culture tags.")]
+    [MaxLength(StudioProfileEntity.MaximumCultureTags, ErrorMessage = "Pick at most {1} culture tags.")]
     [Display(Name = "Culture and benefits")]
     public List<CultureTag> CultureTags { get; set; } = [];
 
-    [MaxLength(StudioProfile.MaximumGames, ErrorMessage = "Add at most {1} released games.")]
+    [MaxLength(StudioProfileEntity.MaximumGames, ErrorMessage = "Add at most {1} released games.")]
     [Display(Name = "Released games")]
     public List<StudioGameInput> Games { get; set; } = [];
 
@@ -73,7 +73,7 @@ public sealed class StudioProfileInputModel : IValidatableObject
                 [nameof(City)]);
         }
 
-        if (!string.IsNullOrWhiteSpace(GstNumber) && !StudioProfile.IsValidGstNumber(GstNumber))
+        if (!string.IsNullOrWhiteSpace(GstNumber) && !StudioProfileEntity.IsValidGstNumber(GstNumber))
         {
             yield return new ValidationResult(
                 "Enter a valid 15-character GSTIN.",
