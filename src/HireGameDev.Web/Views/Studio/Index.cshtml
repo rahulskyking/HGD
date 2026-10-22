@@ -39,9 +39,9 @@
             <div class="col-lg-4">
                 <section class="card h-100">
                     <div class="card-body">
-                        <span class="hgd-eyebrow">Next phase</span>
+                        <span class="hgd-eyebrow">Next step</span>
                         <h2 class="h5 card-title mt-2">Your first job post</h2>
-                        <p class="text-secondary mb-0">Once your studio profile is in place, we will build job creation and discovery next.</p>
+                        <p class="text-secondary mb-0">Complete your studio profile to unlock job drafts, publishing and lifecycle management.</p>
                     </div>
                 </section>
             </div>
@@ -110,12 +110,14 @@
                             <svg class="hgd-icon"><use href="#hgd-icon-briefcase" /></svg>
                         </span>
                         <div class="flex-grow-1">
-                            <h2 class="h5 card-title mb-1">Job posting comes next</h2>
-                            <p class="text-secondary mb-0">We are building job creation and discovery as the next phase of HireGameDev.</p>
+                            <h2 class="h5 card-title mb-1">Hiring at @profile.Name</h2>
+                            <p class="text-secondary mb-0">Create job drafts, publish roles with an expiry date, and pause or close posts when plans change.</p>
                         </div>
-                        <button class="btn btn-outline-secondary" type="button" disabled aria-describedby="job-posting-note">Post a job</button>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a class="btn btn-outline-secondary" asp-controller="StudioJobs" asp-action="Index">Manage job posts</a>
+                            <a class="btn btn-primary" asp-controller="StudioJobs" asp-action="Create">Post a job</a>
+                        </div>
                     </div>
-                    <span id="job-posting-note" class="visually-hidden">Job posting is not available yet.</span>
                 </section>
             </div>
 

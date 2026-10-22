@@ -1,4 +1,5 @@
 using HireGameDev.Domain.Entities;
+using HireGameDev.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,7 +14,30 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Title)
-            .HasMaxLength(200)
+            .HasMaxLength(Job.TitleMaxLength)
+            .IsRequired();
+
+        // Keep enum persistence explicitly integer-backed. Other is a safe migration default for
+        // pre-existing jobs; the application still requires a deliberate category on new posts.
+        builder.Property(x => x.Category)
+            .HasConversion<int>()
+            .HasDefaultValue(JobCategory.Other)
+            .IsRequired();
+
+        builder.Property(x => x.Type)
+            .HasConversion<int>()
+            .IsRequired();
+
+        builder.Property(x => x.SeniorityLevel)
+            .HasConversion<int>()
+            .IsRequired();
+
+        builder.Property(x => x.LocationMode)
+            .HasConversion<int>()
+            .IsRequired();
+
+        builder.Property(x => x.Status)
+            .HasConversion<int>()
             .IsRequired();
 
         builder.Property(x => x.MinimumAnnualSalary)
@@ -25,7 +49,7 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
             .IsRequired();
 
         builder.Property(x => x.City)
-            .HasMaxLength(100)
+            .HasMaxLength(Job.CityMaxLength)
             .IsRequired();
 
         builder.Property(x => x.Description)
@@ -38,6 +62,8 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
         builder.HasIndex(x => x.City);
 
         builder.HasIndex(x => x.ExpiresAtUtc);
+
+        builder.HasIndex(x => x.StudioProfileId);
 
         builder.HasOne(x => x.StudioProfile)
             .WithMany(x => x.Jobs)

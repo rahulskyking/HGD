@@ -57,6 +57,10 @@ app.MapControllerRoute(
     pattern: "Studio/Profile/{action=Index}",
     defaults: new { controller = "StudioProfile" });
 app.MapControllerRoute(
+    name: "studio-jobs",
+    pattern: "Studio/Jobs/{action=Index}/{id?}",
+    defaults: new { controller = "StudioJobs" });
+app.MapControllerRoute(
     name: "privacy",
     pattern: "Privacy",
     defaults: new { controller = "Home", action = "Privacy" });

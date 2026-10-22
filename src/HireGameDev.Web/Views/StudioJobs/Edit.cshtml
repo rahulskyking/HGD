@@ -1,0 +1,227 @@
+@using HireGameDev.Domain.Enums
+@using HireGameDev.Web.ViewModels.Shared
+@model StudioJobEditViewModel
+@{
+    var status = Model.Status ?? JobStatus.Draft;
+    var statusClass = status switch
+    {
+        JobStatus.Published => "hgd-badge-success",
+        JobStatus.Paused => "hgd-badge-warning",
+        JobStatus.Expired => "hgd-badge-danger",
+        JobStatus.Closed => "hgd-badge-neutral",
+        _ => "hgd-badge-primary",
+    };
+    var formAction = Model.IsNew ? "Create" : "Edit";
+    var heading = Model.IsNew ? "Create a job post" : "Edit job post";
+    var expiresOnMin = DateTime.UtcNow.ToString("yyyy-MM-dd");
+    ViewData["Title"] = heading;
+}
+
+<div class="container">
+    @if (Model.StatusMessage is not null)
+    {
+        <div class="alert alert-success d-flex align-items-center gap-2 mt-3" role="status">
+            <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-check-circle" /></svg>
+            <span>@Model.StatusMessage</span>
+        </div>
+    }
+    @if (Model.ErrorMessage is not null)
+    {
+        <div class="alert alert-danger mt-3" role="alert">@Model.ErrorMessage</div>
+    }
+
+    <div class="hgd-page-header">
+        <div>
+            <a class="small text-decoration-none" asp-action="Index">← All job posts</a>
+            <h1 class="mt-2">@heading</h1>
+            @if (!Model.IsNew)
+            {
+                <span class="hgd-badge @statusClass">@EnumDisplay.Name(status)</span>
+            }
+        </div>
+    </div>
+
+    <div class="row g-4 align-items-start">
+        <div class="col-lg-8">
+            <form asp-action="@formAction" asp-route-id="@Model.JobId" method="post" class="d-flex flex-column gap-4">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-0"></div>
+
+                <section class="card">
+                    <div class="card-body">
+                        <h2 class="h5 card-title">Role details</h2>
+                        <div class="mb-3">
+                            <label asp-for="Input.Title" class="form-label"></label>
+                            <input asp-for="Input.Title" class="form-control" autocomplete="off" />
+                            <span asp-validation-for="Input.Title" class="text-danger small"></span>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Input.Category" class="form-label"></label>
+                                <select asp-for="Input.Category" asp-items="EnumDisplay.JobCategories()" class="form-select">
+                                    <option value="">Choose a discipline</option>
+                                </select>
+                                <span asp-validation-for="Input.Category" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.Type" class="form-label"></label>
+                                <select asp-for="Input.Type" asp-items="EnumDisplay.JobTypes()" class="form-select">
+                                    <option value="">Choose a job type</option>
+                                </select>
+                                <span asp-validation-for="Input.Type" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.SeniorityLevel" class="form-label"></label>
+                                <select asp-for="Input.SeniorityLevel" asp-items="EnumDisplay.SeniorityLevels()" class="form-select">
+                                    <option value="">Choose a level</option>
+                                </select>
+                                <span asp-validation-for="Input.SeniorityLevel" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.LocationMode" class="form-label"></label>
+                                <select asp-for="Input.LocationMode" asp-items="EnumDisplay.LocationModes()" class="form-select">
+                                    <option value="">Choose a work arrangement</option>
+                                </select>
+                                <span asp-validation-for="Input.LocationMode" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.City" class="form-label"></label>
+                                <input asp-for="Input.City" class="form-control" autocomplete="address-level2" />
+                                <span asp-validation-for="Input.City" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-body">
+                        <h2 class="h5 card-title">Salary range</h2>
+                        <p class="text-secondary small">Share the annual range in lakhs per annum (LPA).</p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Input.MinimumSalaryLpa" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input asp-for="Input.MinimumSalaryLpa" class="form-control" type="number" step="0.1" min="0.1" max="500" />
+                                    <span class="input-group-text">LPA</span>
+                                </div>
+                                <span asp-validation-for="Input.MinimumSalaryLpa" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.MaximumSalaryLpa" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input asp-for="Input.MaximumSalaryLpa" class="form-control" type="number" step="0.1" min="0.1" max="500" />
+                                    <span class="input-group-text">LPA</span>
+                                </div>
+                                <span asp-validation-for="Input.MaximumSalaryLpa" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-body">
+                        <h2 class="h5 card-title">Job description</h2>
+                        <div class="mb-0">
+                            <label asp-for="Input.Description" class="form-label"></label>
+                            <textarea asp-for="Input.Description" class="form-control" rows="9" placeholder="Describe the role, responsibilities, and what the person will work on."></textarea>
+                            <span asp-validation-for="Input.Description" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-body">
+                        <h2 class="h5 card-title">Required skills</h2>
+                        <p class="text-secondary">Select the skills a candidate must bring to this role.</p>
+                        @await Html.PartialAsync("_SkillPickerPartial", new SkillPicker(
+                            "Input.RequiredSkillIds", Model.Skills, Model.Input.RequiredSkillIds, 0, Model.Skills.Count))
+                        <span asp-validation-for="Input.RequiredSkillIds" class="text-danger small"></span>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-body">
+                        <h2 class="h5 card-title">Nice-to-have skills</h2>
+                        <p class="text-secondary">These are helpful, but not required to apply.</p>
+                        @await Html.PartialAsync("_SkillPickerPartial", new SkillPicker(
+                            "Input.NiceToHaveSkillIds", Model.Skills, Model.Input.NiceToHaveSkillIds, 0, Model.Skills.Count))
+                        <span asp-validation-for="Input.NiceToHaveSkillIds" class="text-danger small"></span>
+                    </div>
+                </section>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-primary" type="submit">
+                        @(Model.IsNew ? "Save draft" : "Save changes")
+                    </button>
+                    <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <aside class="col-lg-4">
+            @if (Model.IsNew)
+            {
+                <section class="card hgd-elevated">
+                    <div class="card-body">
+                        <h2 class="h5 card-title">Save first, publish when ready</h2>
+                        <p class="text-secondary mb-0">Your post starts as a draft. After saving, you can choose an expiry date and publish it.</p>
+                    </div>
+                </section>
+            }
+            else
+            {
+                <section class="card hgd-elevated mb-4">
+                    <div class="card-body">
+                        <h2 class="h5 card-title">Job status</h2>
+                        <p><span class="hgd-badge @statusClass">@EnumDisplay.Name(status)</span></p>
+                        @if (Model.ExpiresAtUtc is { } expiry)
+                        {
+                            <p class="small text-secondary">Expires @expiry.ToString("d MMM yyyy") UTC.</p>
+                        }
+                        @if (status == JobStatus.Draft)
+                        {
+                            <form asp-action="Publish" asp-route-id="@Model.JobId" method="post">
+                                <div class="mb-3">
+                                    <label for="expiresOn" class="form-label">Expiry date (UTC)</label>
+                                    <input id="expiresOn" name="expiresOn" type="date" class="form-control" min="@expiresOnMin" required />
+                                    <div class="form-text">The selected date is inclusive; the job expires at the end of that UTC date.</div>
+                                </div>
+                                <button class="btn btn-success w-100" type="submit">Publish job</button>
+                            </form>
+                        }
+                        else if (status == JobStatus.Published)
+                        {
+                            <form asp-action="Pause" asp-route-id="@Model.JobId" method="post">
+                                <button class="btn btn-outline-warning w-100" type="submit">Pause job</button>
+                            </form>
+                        }
+                        else if (status == JobStatus.Paused)
+                        {
+                            <form asp-action="Resume" asp-route-id="@Model.JobId" method="post">
+                                <button class="btn btn-success w-100" type="submit">Resume job</button>
+                            </form>
+                        }
+                        @if (status is JobStatus.Draft or JobStatus.Published or JobStatus.Paused)
+                        {
+                            <form asp-action="Close" asp-route-id="@Model.JobId" method="post" class="mt-2">
+                                <button class="btn btn-link text-danger w-100" type="submit">Close job</button>
+                            </form>
+                        }
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-body">
+                        <h2 class="h6 text-uppercase text-secondary">Before you publish</h2>
+                        <p class="small text-secondary mb-0">Publishing sets the lifecycle status and expiry date. Public search and job details arrive in Step 7.</p>
+                    </div>
+                </section>
+            }
+        </aside>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

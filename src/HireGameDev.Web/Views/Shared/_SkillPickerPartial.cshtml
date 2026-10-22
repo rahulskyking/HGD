@@ -31,7 +31,7 @@
             <div class="d-flex flex-wrap gap-2">
                 @foreach (var skill in group)
                 {
-                    var id = $"skill-{skill.Id:N}";
+                    var id = $"{pickerId}-skill-{skill.Id:N}";
                     <span data-hgd-filter-item>
                         <input type="checkbox" class="btn-check" id="@id" name="@Model.FieldName" value="@skill.Id"
                                autocomplete="off" checked="@Model.SelectedIds.Contains(skill.Id)" />

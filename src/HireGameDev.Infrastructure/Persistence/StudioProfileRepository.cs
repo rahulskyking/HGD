@@ -43,5 +43,16 @@ public sealed class StudioProfileRepository(ApplicationDbContext dbContext)
             .SingleOrDefaultAsync(profile => profile.UserId == userId, cancellationToken);
     }
 
+    public async Task<Guid?> GetIdByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        return await dbContext.StudioProfiles
+            .AsNoTracking()
+            .Where(profile => profile.UserId == userId)
+            .Select(profile => (Guid?)profile.Id)
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
     public void Add(StudioProfile profile) => dbContext.StudioProfiles.Add(profile);
 }

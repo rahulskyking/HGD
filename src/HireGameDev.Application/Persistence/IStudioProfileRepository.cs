@@ -10,5 +10,7 @@ public interface IStudioProfileRepository
 
     Task<StudioProfile?> GetForMediaUpdateAsync(Guid userId, CancellationToken cancellationToken = default);
 
+    Task<Guid?> GetIdByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
+
     void Add(StudioProfile profile);
 }

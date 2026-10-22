@@ -19,6 +19,44 @@ public static class EnumDisplay
         _ => value.ToString(),
     };
 
+    public static string Name(JobCategory value) => value switch
+    {
+        JobCategory.Programming => "Programming",
+        JobCategory.Art => "Art",
+        JobCategory.Design => "Design",
+        JobCategory.QA => "QA",
+        JobCategory.Production => "Production",
+        JobCategory.Audio => "Audio",
+        JobCategory.Other => "Other",
+        _ => value.ToString(),
+    };
+
+    public static string Name(JobType value) => value switch
+    {
+        JobType.FullTime => "Full-time",
+        JobType.Contract => "Contract",
+        JobType.Internship => "Internship",
+        _ => value.ToString(),
+    };
+
+    public static string Name(LocationMode value) => value switch
+    {
+        LocationMode.OnSite => "On-site",
+        LocationMode.Remote => "Remote",
+        LocationMode.Hybrid => "Hybrid",
+        _ => value.ToString(),
+    };
+
+    public static string Name(JobStatus value) => value switch
+    {
+        JobStatus.Draft => "Draft",
+        JobStatus.Published => "Published",
+        JobStatus.Paused => "Paused",
+        JobStatus.Expired => "Expired",
+        JobStatus.Closed => "Closed",
+        _ => value.ToString(),
+    };
+
     public static string Name(NoticePeriod value) => value switch
     {
         NoticePeriod.Immediate => "Immediate",
@@ -113,6 +151,15 @@ public static class EnumDisplay
 
     public static IReadOnlyList<SelectListItem> SeniorityLevels() =>
         Enum.GetValues<SeniorityLevel>().Select(x => new SelectListItem(Name(x), x.ToString())).ToList();
+
+    public static IReadOnlyList<SelectListItem> JobCategories() =>
+        Enum.GetValues<JobCategory>().Select(x => new SelectListItem(Name(x), x.ToString())).ToList();
+
+    public static IReadOnlyList<SelectListItem> JobTypes() =>
+        Enum.GetValues<JobType>().Select(x => new SelectListItem(Name(x), x.ToString())).ToList();
+
+    public static IReadOnlyList<SelectListItem> LocationModes() =>
+        Enum.GetValues<LocationMode>().Select(x => new SelectListItem(Name(x), x.ToString())).ToList();
 
     public static IReadOnlyList<SelectListItem> NoticePeriods() =>
         Enum.GetValues<NoticePeriod>().Select(x => new SelectListItem(Name(x), x.ToString())).ToList();

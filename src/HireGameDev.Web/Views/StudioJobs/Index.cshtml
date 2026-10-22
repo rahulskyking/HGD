@@ -1,0 +1,111 @@
+@using HireGameDev.Domain.Enums
+@model StudioJobsIndexViewModel
+@{
+    ViewData["Title"] = "Job posts";
+}
+
+<div class="container">
+    @if (Model.StatusMessage is not null)
+    {
+        <div class="alert alert-success d-flex align-items-center gap-2 mt-3" role="status">
+            <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-check-circle" /></svg>
+            <span>@Model.StatusMessage</span>
+        </div>
+    }
+    @if (Model.ErrorMessage is not null)
+    {
+        <div class="alert alert-danger mt-3" role="alert">@Model.ErrorMessage</div>
+    }
+
+    <div class="hgd-page-header">
+        <div>
+            <span class="hgd-eyebrow">Studio</span>
+            <h1>Job posts</h1>
+            <p class="text-secondary mb-0">Create drafts and manage the status of your studio's roles.</p>
+        </div>
+        @if (Model.HasStudioProfile)
+        {
+            <a class="btn btn-primary d-inline-flex align-items-center gap-2" asp-action="Create">
+                <svg class="hgd-icon" aria-hidden="true"><use href="#hgd-icon-plus" /></svg> Create a job post
+            </a>
+        }
+    </div>
+
+    @if (!Model.HasStudioProfile)
+    {
+        <section class="card hgd-elevated">
+            <div class="card-body d-flex flex-column flex-sm-row gap-3 align-items-sm-center">
+                <span class="hgd-tile" aria-hidden="true">
+                    <svg class="hgd-icon"><use href="#hgd-icon-briefcase" /></svg>
+                </span>
+                <div class="flex-grow-1">
+                    <h2 class="h5 card-title">Create your studio profile first</h2>
+                    <p class="text-secondary mb-0">Job posts belong to a studio profile. Set up yours before creating a role.</p>
+                </div>
+                <a class="btn btn-primary" asp-controller="StudioProfile" asp-action="Edit">Create studio profile</a>
+            </div>
+        </section>
+    }
+    else if (Model.Jobs.Count == 0)
+    {
+        <section class="card">
+            <div class="card-body text-center py-5">
+                <span class="hgd-tile mx-auto mb-3" aria-hidden="true">
+                    <svg class="hgd-icon"><use href="#hgd-icon-briefcase" /></svg>
+                </span>
+                <h2 class="h5">No job posts yet</h2>
+                <p class="text-secondary">Start with a draft. You can review and publish it when the details are ready.</p>
+                <a class="btn btn-primary" asp-action="Create">Create your first job post</a>
+            </div>
+        </section>
+    }
+    else
+    {
+        <div class="d-flex flex-column gap-3">
+            @foreach (var job in Model.Jobs)
+            {
+                var statusClass = job.Status switch
+                {
+                    JobStatus.Published => "hgd-badge-success",
+                    JobStatus.Paused => "hgd-badge-warning",
+                    JobStatus.Expired => "hgd-badge-danger",
+                    JobStatus.Closed => "hgd-badge-neutral",
+                    _ => "hgd-badge-primary",
+                };
+                <article class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column flex-md-row gap-3 align-items-md-start">
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                    <h2 class="h5 mb-0">@job.Title</h2>
+                                    <span class="hgd-badge @statusClass">@EnumDisplay.Name(job.Status)</span>
+                                </div>
+                                <p class="text-secondary mb-2">
+                                    @EnumDisplay.Name(job.Category) · @EnumDisplay.Name(job.Type) · @EnumDisplay.Name(job.SeniorityLevel)
+                                </p>
+                                <p class="mb-2">
+                                    <svg class="hgd-icon text-secondary" aria-hidden="true"><use href="#hgd-icon-map-pin" /></svg>
+                                    @job.City · @EnumDisplay.Name(job.LocationMode)
+                                    <span class="mx-2 text-secondary">·</span>
+                                    @Salary.FormatLpa(job.MinimumAnnualSalary) – @Salary.FormatLpa(job.MaximumAnnualSalary)
+                                </p>
+                                <p class="small text-secondary mb-0">
+                                    @job.RequiredSkillCount required skill(s) · @job.NiceToHaveSkillCount nice-to-have
+                                    @if (job.ExpiresAtUtc is { } expiresAt)
+                                    {
+                                        <span> · Expires @expiresAt.ToString("d MMM yyyy") UTC</span>
+                                    }
+                                </p>
+                            </div>
+                            <a class="btn btn-outline-secondary flex-shrink-0" asp-action="Edit" asp-route-id="@job.Id">Manage job</a>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+
+    <p class="small text-secondary mt-4 mb-0">
+        Public job search and detail pages are part of Step 7; this workspace is for studio-side posting and lifecycle management.
+    </p>
+</div>

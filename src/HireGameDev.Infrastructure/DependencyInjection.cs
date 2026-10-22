@@ -29,6 +29,7 @@ public static class DependencyInjection
             provider.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<ICandidateProfileRepository, CandidateProfileRepository>();
         services.AddScoped<IStudioProfileRepository, StudioProfileRepository>();
+        services.AddScoped<IJobRepository, JobRepository>();
         services.AddScoped<ISkillRepository, SkillRepository>();
 
         services

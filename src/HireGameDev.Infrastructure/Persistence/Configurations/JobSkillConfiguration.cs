@@ -12,6 +12,9 @@ public class JobSkillConfiguration : IEntityTypeConfiguration<JobSkill>
 
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.IsRequired)
+            .IsRequired();
+
         builder.HasIndex(x => new
         {
             x.JobId,

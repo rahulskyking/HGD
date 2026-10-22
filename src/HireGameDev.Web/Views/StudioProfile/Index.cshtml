@@ -177,8 +177,11 @@
             <section class="card hgd-elevated">
                 <div class="card-body">
                     <h2 class="h5 card-title">Ready to hire?</h2>
-                    <p class="text-secondary">Job posting and candidate discovery are coming in the next phase.</p>
-                    <a class="btn btn-outline-secondary" asp-controller="Studio" asp-action="Index">Back to dashboard</a>
+                    <p class="text-secondary">Create drafts, publish roles with an expiry date, and manage your active job posts.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a class="btn btn-primary" asp-controller="StudioJobs" asp-action="Create">Post a job</a>
+                        <a class="btn btn-outline-secondary" asp-controller="StudioJobs" asp-action="Index">Manage job posts</a>
+                    </div>
                 </div>
             </section>
 
